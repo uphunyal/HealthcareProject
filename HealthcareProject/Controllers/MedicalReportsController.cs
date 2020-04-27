@@ -58,17 +58,17 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MedicalreportName,ReportFile,MedicalreportId,PatientId")] MedicalReport medicalReport)
+        public async Task<IActionResult> Create([Bind("MedicalreportName,ReportFile,MedicalreportId,PatientId")] MedicalReport medicalReports)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(medicalReport);
+                _context.Add(medicalReports);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MedicalreportId"] = new SelectList(_context.MedicalreportType, "MedicalreportId", "ReportType", medicalReport.MedicalreportId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", medicalReport.PatientId);
-            return View(medicalReport);
+            ViewData["MedicalreportId"] = new SelectList(_context.MedicalreportType, "MedicalreportId", "ReportType", medicalReports.MedicalreportId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", medicalReports.PatientId);
+            return View(medicalReports);
         }
 
         // GET: MedicalReports/Edit/5
@@ -94,9 +94,9 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MedicalreportName,ReportFile,MedicalreportId,PatientId")] MedicalReport medicalReport)
+        public async Task<IActionResult> Edit(string id, [Bind("MedicalreportName,ReportFile,MedicalreportId,PatientId")] MedicalReport medicalReports)
         {
-            if (id != medicalReport.MedicalreportName)
+            if (id != medicalReports.MedicalreportName)
             {
                 return NotFound();
             }
@@ -105,12 +105,12 @@ namespace HealthcareProject.Controllers
             {
                 try
                 {
-                    _context.Update(medicalReport);
+                    _context.Update(medicalReports);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MedicalReportExists(medicalReport.MedicalreportName))
+                    if (!MedicalReportExists(medicalReports.MedicalreportName))
                     {
                         return NotFound();
                     }
@@ -121,9 +121,9 @@ namespace HealthcareProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MedicalreportId"] = new SelectList(_context.MedicalreportType, "MedicalreportId", "ReportType", medicalReport.MedicalreportId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", medicalReport.PatientId);
-            return View(medicalReport);
+            ViewData["MedicalreportId"] = new SelectList(_context.MedicalreportType, "MedicalreportId", "ReportType", medicalReports.MedicalreportId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", medicalReports.PatientId);
+            return View(medicalReports);
         }
 
         // GET: MedicalReports/Delete/5
