@@ -1,0 +1,59 @@
+﻿@model IEnumerable<HealthcareProject.Models.VisitRecord>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.VisitReason)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Visited)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Doctor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patient)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitReason)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Visited)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patient.Allergy)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

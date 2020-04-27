@@ -1,0 +1,50 @@
+﻿@model HealthcareProject.Models.VisitRecord
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>VisitRecord</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="VisitReason" class="control-label"></label>
+                <input asp-for="VisitReason" class="form-control" />
+                <span asp-validation-for="VisitReason" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Prescription" class="control-label"></label>
+                <input asp-for="Prescription" class="form-control" />
+                <span asp-validation-for="Prescription" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="VisitDate" />
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Visited" /> @Html.DisplayNameFor(model => model.Visited)
+                </label>
+            </div>
+            <input type="hidden" asp-for="PatientId" />
+            <div class="form-group">
+                <label asp-for="DoctorId" class="control-label"></label>
+                <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorId"></select>
+                <span asp-validation-for="DoctorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
