@@ -79,14 +79,14 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: VisitRecords/Edit/5
-        public async Task<IActionResult> Edit(DateTime? id)
+        public async Task<IActionResult> Edit( int patient_id, DateTime id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var visitRecord = await _context.VisitRecord.FindAsync(id);
+            var visitRecord = await _context.VisitRecord.FindAsync(id, patient_id);
             if (visitRecord == null)
             {
                 return NotFound();
@@ -101,9 +101,9 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, [Bind("VisitReason,Prescription,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
+        public async Task<IActionResult> Edit(DateTime id, int patient_id, [Bind("VisitReason,Prescription,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
         {
-            if (id != visitRecord.VisitDate)
+            if (id != visitRecord.VisitDate && patient_id!=visitRecord.PatientId)
             {
                 return NotFound();
             }

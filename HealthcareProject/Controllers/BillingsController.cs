@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using Stripe;
+using System.Net.Mail;
 
 namespace HealthcareProject.Controllers
 {
@@ -25,7 +26,7 @@ namespace HealthcareProject.Controllers
             var healthcarev1Context = _context.Billing.Include(b => b.Patient);
             return View(await healthcarev1Context.ToListAsync());
         }
-
+      
         // GET: Billings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -101,20 +102,48 @@ namespace HealthcareProject.Controllers
                     //Update the paid starus in the invoice
                     billing.Paid = true;
                     await _context.SaveChangesAsync();
+
+                    //Send an email
+                    //Sending email, make a different class file for this.
+                    var fromAddress = new MailAddress("phunyal.utsav1@gmail.com", "Utsav");
+                    var toAddress = new MailAddress(charge.ReceiptEmail);
+                    string messagebody = "You paid your invoice of amount " + billing.BillingAmount + " and billing Id " + billing.BillingId + ". Your charge id is " + charge.Id;
+                    const string subject = "Receipt of Paymment";
+                    string body = messagebody;
+
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new System.Net.NetworkCredential(fromAddress.Address, "xrtwdhjqxqvsurfn")
+                    };
+                    using (var message = new MailMessage(fromAddress, toAddress)
+                    {
+                        Subject = subject,
+                        Body = body
+                    })
+                    {
+                        smtp.Send(message);
+                    }
                 }
 
 
 
-                return RedirectToAction("Index");
+                return View("chargesuccessful");
             }
-            else { }
-            return View("Index", "Billings");
+            else {
+                return View("Chargeunsuccessful");
+            }
+            
         }
 
         // GET: Billings/Create
         public IActionResult Create()
         {
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy");
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientId");
             return View();
         }
 

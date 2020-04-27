@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Rotativa.AspNetCore;
+using Stripe;
 
 namespace HealthcareProject
 {
@@ -80,8 +81,8 @@ namespace HealthcareProject
 
             // configuration (resolvers, counter key builders)
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-            services.AddRazorPages();
-          
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
         }
         //Create default accounts at startup if not present
         //Create admin role
@@ -211,7 +212,7 @@ namespace HealthcareProject
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
         {
             //Stripe Payment
-           // StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
 
             if (env.IsDevelopment())
             {
@@ -226,6 +227,7 @@ namespace HealthcareProject
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            //Rate limit to prevet overloading of the system
             app.UseIpRateLimiting();
 
             app.UseRouting();

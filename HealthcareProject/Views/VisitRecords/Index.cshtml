@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Patient)
             </th>
+            <th>
+                Visit Date
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -43,13 +46,16 @@
                 @Html.DisplayFor(modelItem => item.Visited)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.VisitDate)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Patient.Allergy)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Edit", "Edit", new {patient_id= item.PatientId,id= item.VisitDate}) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
             </td>

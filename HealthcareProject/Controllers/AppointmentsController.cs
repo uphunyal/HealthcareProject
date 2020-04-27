@@ -28,6 +28,8 @@ namespace HealthcareProject.Controllers
             return View(await healthcarev1Context.ToListAsync());
         }
 
+
+       
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -52,7 +54,7 @@ namespace HealthcareProject.Controllers
         public IActionResult Create()
         {
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail");
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy");
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
             return View();
         }
 
@@ -71,7 +73,7 @@ namespace HealthcareProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", appointment.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
         }
 
@@ -89,7 +91,7 @@ namespace HealthcareProject.Controllers
                 return NotFound();
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", appointment.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
         }
 
@@ -109,9 +111,9 @@ namespace HealthcareProject.Controllers
             {
                 try
                 {
-                    if (appointment.VisitRecord)
+                    if (appointment.VisitRecord==true)
                     {
-                        var record = new VisitRecord { VisitDate = DateTime.Now, VisitReason = appointment.AppointmentReason, Prescription = "N/A", PatientId = (int)appointment.PatientId, DoctorId = appointment.DoctorId, Visited = true };
+                        var record = new VisitRecord { VisitDate = DateTime.Now, VisitReason = appointment.AppointmentReason, Prescription = "N/A", PatientId = (int)appointment.PatientId, DoctorId = appointment.DoctorId, Visited = false };
                         _context.Add(record);
                         await _context.SaveChangesAsync();
 

@@ -74,7 +74,7 @@ namespace HealthcareProject
 
             foreach (var x in doctor_key)
             {
-                int report_id = 1;
+               // int report_id = 1;
                 var patient_list_for_each_doctor = visited_patient.Include(c => c.PatientId).Where(c => c.DoctorId == x.DoctorId).Where(c => c.VisitDate == localdate).ToArray();
                 int no_of_patient = visited_patient.Include(c => c.PatientId).Where(c => c.DoctorId == x.DoctorId).Where(c => c.VisitDate == localdate).Count();
                 string doctor_name = x.Doctor.DoctorName;
