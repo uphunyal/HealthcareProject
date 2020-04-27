@@ -113,7 +113,17 @@ namespace HealthcareProject.Controllers
                 try
                 {
                     _context.Update(visitRecord);
+
                     await _context.SaveChangesAsync();
+
+
+                    //Redirect to create invoice for copy
+                    if (visitRecord.Visited == true)
+                    {
+
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Create", "Billings", visitRecord.PatientId);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {

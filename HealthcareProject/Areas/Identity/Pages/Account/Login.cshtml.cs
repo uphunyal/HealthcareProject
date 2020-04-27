@@ -96,7 +96,7 @@ namespace HealthcareProject.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Invalid user name or password! or If you have not confirmed your account, please confirm it!");
                     return Page();
                 }
             }

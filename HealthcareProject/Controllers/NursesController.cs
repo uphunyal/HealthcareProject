@@ -6,16 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace HealthcareProject.Controllers
 {
     public class NursesController : Controller
     {
         private readonly healthcarev1Context _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signManager;
 
-        public NursesController(healthcarev1Context context)
+        public NursesController(healthcarev1Context context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signManager = signManager;
         }
 
         // GET: Nurses
@@ -62,6 +67,28 @@ namespace HealthcareProject.Controllers
             {
                 _context.Add(nurse);
                 await _context.SaveChangesAsync();
+                
+                // Create nurse account using the email and default password
+
+                var nurseaccount = new IdentityUser
+                {
+                    UserName = nurse.NurseEmail,
+                    Email = nurse.NurseEmail,
+                    EmailConfirmed = true,
+
+
+                };
+
+                var user = await _userManager.FindByEmailAsync(nurse.NurseEmail);
+                if (user == null)
+                {
+                    var createpoweruser = await _userManager.CreateAsync(nurseaccount, "Superuser1!");
+                    if (createpoweruser.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(nurseaccount, "Nurse");
+                    }
+
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", nurse.DoctorId);

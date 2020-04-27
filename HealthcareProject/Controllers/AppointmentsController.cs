@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace HealthcareProject.Controllers
 {
     public class AppointmentsController : Controller
     {
         private readonly healthcarev1Context _context;
+      
 
         public AppointmentsController(healthcarev1Context context)
         {
             _context = context;
+          
         }
 
         // GET: Appointments
@@ -64,6 +67,7 @@ namespace HealthcareProject.Controllers
             {
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
@@ -105,6 +109,13 @@ namespace HealthcareProject.Controllers
             {
                 try
                 {
+                    if (appointment.VisitRecord)
+                    {
+                        var record = new VisitRecord { VisitDate = DateTime.Now, VisitReason = appointment.AppointmentReason, Prescription = "N/A", PatientId = (int)appointment.PatientId, DoctorId = appointment.DoctorId, Visited = true };
+                        _context.Add(record);
+                        await _context.SaveChangesAsync();
+
+                    }
                     _context.Update(appointment);
                     await _context.SaveChangesAsync();
                 }
