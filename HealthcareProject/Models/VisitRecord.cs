@@ -7,6 +7,7 @@ namespace HealthcareProject.Models
     {
         public string VisitReason { get; set; }
         public string Prescription { get; set; }
+        public string Visitid { get; set; }
         public DateTime VisitDate { get; set; }
         public bool Visited { get; set; }
         public int PatientId { get; set; }

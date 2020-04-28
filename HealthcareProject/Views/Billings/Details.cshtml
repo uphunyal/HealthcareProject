@@ -1,35 +1,35 @@
 ﻿@model HealthcareProject.Models.Billing
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Your Invoice";
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>Billing</h4>
+    <h4>Healthcare Invoice</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BillingDate)
+            Billed Date
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.BillingDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BillingAmount)
+           Billed Amount
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.BillingAmount)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Paid)
+           Paid Status (Checked if Paid)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Paid)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Patient)
+            Name of Patient
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Patient.Allergy)

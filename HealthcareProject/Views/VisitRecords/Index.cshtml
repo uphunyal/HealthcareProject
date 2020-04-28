@@ -19,6 +19,9 @@
                 @Html.DisplayNameFor(model => model.Prescription)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.VisitDate)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Visited)
             </th>
             <th>
@@ -28,7 +31,7 @@
                 @Html.DisplayNameFor(model => model.Patient)
             </th>
             <th>
-                Visit Date
+                Patient Medical Details
             </th>
             <th></th>
         </tr>
@@ -43,21 +46,22 @@
                 @Html.DisplayFor(modelItem => item.Prescription)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Visited)
+                @Html.DisplayFor(modelItem => item.VisitDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VisitDate)
+                @Html.DisplayFor(modelItem => item.Visited)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Patient.Allergy)
+                @Html.DisplayFor(modelItem => item.Patient.PatientName)
             </td>
+            <td><a asp-controller="Patients" asp-action="Edit" asp-route-id="@item.Patient.PatientId">Edit</a></td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {patient_id= item.PatientId,id= item.VisitDate}) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { id = item.Visitid, pid = item.PatientId }) |
+                @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
             </td>
         </tr>
 }

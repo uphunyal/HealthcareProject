@@ -21,8 +21,13 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: Billings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchstring)
         {
+            if (!String.IsNullOrEmpty(searchstring))
+            {
+                var searchContext = _context.Billing.Include(b => b.Patient).Where(c=>c.BillingId==Int32.Parse(searchstring));
+                return View(await searchContext.ToListAsync());
+            }
             var healthcarev1Context = _context.Billing.Include(b => b.Patient);
             return View(await healthcarev1Context.ToListAsync());
         }
@@ -160,7 +165,7 @@ namespace HealthcareProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", billing.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", billing.PatientId);
             return View(billing);
         }
 
@@ -177,7 +182,7 @@ namespace HealthcareProject.Controllers
             {
                 return NotFound();
             }
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", billing.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", billing.PatientId);
             return View(billing);
         }
 

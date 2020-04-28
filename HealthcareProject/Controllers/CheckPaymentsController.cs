@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using HealthcareProject.Services;
+using System.Net.Mail;
 
 namespace HealthcareProject.Controllers
 {
@@ -45,9 +47,11 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: CheckPayments/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId");
+            ViewData["PaymentAmount"] = new SelectList(_context.Billing, "BillingId", "BillingAmount", id);
+            ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", id);
+
             return View();
         }
 
@@ -56,12 +60,68 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CheckNo,PaymentAmount,PaymentDate,BillingId")] CheckPayment checkPayment)
+        public async Task<IActionResult> Create([Bind("CheckNo,PaymentAmount,PaymentDate,BillingId,ReceiveReceipt")] CheckPayment checkPayment)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(checkPayment);
                 await _context.SaveChangesAsync();
+                
+                
+                //Update Paid Status in invoice
+
+                var billing = await _context.Billing
+               .FirstOrDefaultAsync(m => m.BillingId == checkPayment.BillingId);
+            
+                billing.Paid = true;
+                await _context.SaveChangesAsync();
+
+
+                //Send receipt 
+                if (checkPayment.ReceiveReceipt == true)
+                {
+                    var get_patient_id = _context.Billing.Where(c => c.BillingId == checkPayment.BillingId).FirstOrDefault().PatientId;
+                    var get_patient_email = _context.Patient.Where(c => c.PatientId == get_patient_id).FirstOrDefault().PatientEmail;
+                    var get_patient_name = _context.Patient.Where(c => c.PatientId == get_patient_id).FirstOrDefault().PatientName;
+
+
+
+                    /* SendReceipt receipt = new SendReceipt();
+                         receipt.Sendemail(get_patient_email, checkPayment.PaymentAmount, checkPayment.BillingId);*/
+
+
+                    //Send an email
+                    //Sending email, make a different class file for this.
+                    var fromAddress = new MailAddress("phunyal.utsav1@gmail.com", "Healthcare Service");
+                    var toAddress = new MailAddress(get_patient_email, get_patient_name);
+                    string messagebody = "You paid your invoice of amount " + checkPayment.PaymentAmount + " and billing Id " + checkPayment.BillingId;
+                    const string subject = "Receipt of Paymment";
+                    string body = messagebody;
+
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new System.Net.NetworkCredential(fromAddress.Address, "xrtwdhjqxqvsurfn")
+                    };
+                    using (var message = new MailMessage(fromAddress, toAddress)
+                    {
+                        Subject = subject,
+                        Body = body
+                    })
+                    {
+                        smtp.Send(message);
+                    }
+
+                    Console.WriteLine(get_patient_email);
+                    Console.WriteLine(get_patient_name);
+
+
+
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", checkPayment.BillingId);
@@ -90,7 +150,7 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CheckNo,PaymentAmount,PaymentDate,BillingId")] CheckPayment checkPayment)
+        public async Task<IActionResult> Edit(int id, [Bind("CheckNo,PaymentAmount,PaymentDate,BillingId,ReceiveReceipt")] CheckPayment checkPayment)
         {
             if (id != checkPayment.CheckNo)
             {

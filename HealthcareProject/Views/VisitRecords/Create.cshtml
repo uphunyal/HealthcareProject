@@ -23,6 +23,11 @@
                 <span asp-validation-for="Prescription" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Visitid" class="control-label"></label>
+                <input asp-for="Visitid" class="form-control" />
+                <span asp-validation-for="Visitid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="VisitDate" class="control-label"></label>
                 <input asp-for="VisitDate" class="form-control" />
                 <span asp-validation-for="VisitDate" class="text-danger"></span>
@@ -51,6 +56,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

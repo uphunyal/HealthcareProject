@@ -24,6 +24,12 @@
             @Html.DisplayFor(model => model.Prescription)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VisitDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VisitDate)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Visited)
         </dt>
         <dd class = "col-sm-10">
@@ -39,12 +45,12 @@
             @Html.DisplayNameFor(model => model.Patient)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Patient.Allergy)
+            @Html.DisplayFor(model => model.Patient.PatientEmail)
         </dd class>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="VisitDate" />
+        <input type="hidden" asp-for="Visitid" />
         <input type="hidden" asp-for="PatientId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>

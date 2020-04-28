@@ -19,6 +19,9 @@
                 @Html.DisplayNameFor(model => model.PaymentAmount)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.ReceiveReceipt)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Billing)
             </th>
             <th></th>
@@ -32,6 +35,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceiveReceipt)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Billing.BillingId)

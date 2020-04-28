@@ -22,7 +22,12 @@
                 <input asp-for="Prescription" class="form-control" />
                 <span asp-validation-for="Prescription" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="VisitDate" />
+            <input type="hidden" asp-for="Visitid" />
+            <div class="form-group">
+                <label asp-for="VisitDate" class="control-label"></label>
+                <input asp-for="VisitDate" class="form-control" />
+                <span asp-validation-for="VisitDate" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Visited" /> @Html.DisplayNameFor(model => model.Visited)
@@ -45,6 +50,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

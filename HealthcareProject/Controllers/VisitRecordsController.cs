@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize]
     public class VisitRecordsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -21,19 +23,12 @@ namespace HealthcareProject.Controllers
         // GET: VisitRecords
         public async Task<IActionResult> Index()
         {
-
             var healthcarev1Context = _context.VisitRecord.Include(v => v.Doctor).Include(v => v.Patient);
-           
-           /* var getdoctorid = _context.Nurse.Where(c => c.NurseEmail == User.Identity.Name).FirstOrDefault().DoctorId;
-            
-            var healthcarev1Context1 = _context.VisitRecord.Include(v => v.Doctor).Where(c=>c.DoctorId==getdoctorid)
-                .Include(v => v.Patient);*/
-
             return View(await healthcarev1Context.ToListAsync());
         }
-
+/*
         // GET: VisitRecords/Details/5
-        public async Task<IActionResult> Details(DateTime? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -43,7 +38,7 @@ namespace HealthcareProject.Controllers
             var visitRecord = await _context.VisitRecord
                 .Include(v => v.Doctor)
                 .Include(v => v.Patient)
-                .FirstOrDefaultAsync(m => m.VisitDate == id);
+                .FirstOrDefaultAsync(m => m.Visitid == id);
             if (visitRecord == null)
             {
                 return NotFound();
@@ -56,7 +51,7 @@ namespace HealthcareProject.Controllers
         public IActionResult Create()
         {
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail");
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy");
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
             return View();
         }
 
@@ -65,7 +60,7 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VisitReason,Prescription,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
+        public async Task<IActionResult> Create([Bind("VisitReason,Prescription,Visitid,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
         {
             if (ModelState.IsValid)
             {
@@ -74,25 +69,25 @@ namespace HealthcareProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", visitRecord.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", visitRecord.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", visitRecord.PatientId);
             return View(visitRecord);
-        }
+        }*/
 
         // GET: VisitRecords/Edit/5
-        public async Task<IActionResult> Edit( int patient_id, DateTime id)
+        public async Task<IActionResult> Edit(string id, int pid)
         {
-            if (id == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var visitRecord = await _context.VisitRecord.FindAsync(id, patient_id);
+            var visitRecord = await _context.VisitRecord.FindAsync(id, pid);
             if (visitRecord == null)
             {
                 return NotFound();
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", visitRecord.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", visitRecord.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", visitRecord.PatientId);
             return View(visitRecord);
         }
 
@@ -101,9 +96,9 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, int patient_id, [Bind("VisitReason,Prescription,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
+        public async Task<IActionResult> Edit(string id, [Bind("VisitReason,Prescription,Visitid,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
         {
-            if (id != visitRecord.VisitDate && patient_id!=visitRecord.PatientId)
+            if (id != visitRecord.Visitid)
             {
                 return NotFound();
             }
@@ -113,21 +108,25 @@ namespace HealthcareProject.Controllers
                 try
                 {
                     _context.Update(visitRecord);
-
                     await _context.SaveChangesAsync();
-
-
-                    //Redirect to create invoice for copy
                     if (visitRecord.Visited == true)
                     {
+                        //Clear appointment once patient visits the doctor
+                        int patient_id = visitRecord.PatientId;
+                        var appointment_context = _context.Appointment.Where(a => a.PatientId == patient_id).FirstOrDefault();
+                        _context.Appointment.Remove(appointment_context);
+                         await _context.SaveChangesAsync();
 
+                        var record = new Billing { BillingAmount=50, BillingDate= DateTime.UtcNow, PatientId=visitRecord.PatientId, Paid= false };
+                        _context.Add(record);
                         await _context.SaveChangesAsync();
-                        return RedirectToAction("Create", "Billings", visitRecord.PatientId);
+                        //return RedirectToAction("Create", "Billings");
+                        return RedirectToAction("Index","VisitRecords");
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VisitRecordExists(visitRecord.VisitDate))
+                    if (!VisitRecordExists(visitRecord.Visitid))
                     {
                         return NotFound();
                     }
@@ -139,12 +138,12 @@ namespace HealthcareProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", visitRecord.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", visitRecord.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", visitRecord.PatientId);
             return View(visitRecord);
         }
 
-        // GET: VisitRecords/Delete/5
-        public async Task<IActionResult> Delete(DateTime? id)
+       /* // GET: VisitRecords/Delete/5
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -154,7 +153,7 @@ namespace HealthcareProject.Controllers
             var visitRecord = await _context.VisitRecord
                 .Include(v => v.Doctor)
                 .Include(v => v.Patient)
-                .FirstOrDefaultAsync(m => m.VisitDate == id);
+                .FirstOrDefaultAsync(m => m.Visitid == id);
             if (visitRecord == null)
             {
                 return NotFound();
@@ -166,17 +165,17 @@ namespace HealthcareProject.Controllers
         // POST: VisitRecords/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(DateTime id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var visitRecord = await _context.VisitRecord.FindAsync(id);
             _context.VisitRecord.Remove(visitRecord);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool VisitRecordExists(DateTime id)
+*/
+        private bool VisitRecordExists(string id)
         {
-            return _context.VisitRecord.Any(e => e.VisitDate == id);
+            return _context.VisitRecord.Any(e => e.Visitid == id);
         }
     }
 }

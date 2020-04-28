@@ -30,7 +30,8 @@ namespace HealthcareProject.Models
         public virtual DbSet<Patient> Patient { get; set; }
         public virtual DbSet<VisitRecord> VisitRecord { get; set; }
 
-      
+        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Appointment>(entity =>
@@ -101,7 +102,7 @@ namespace HealthcareProject.Models
             modelBuilder.Entity<CardPayment>(entity =>
             {
                 entity.HasKey(e => e.ReferenceNo)
-                    .HasName("PK__Card_Pay__8E861397A8D126AE");
+                    .HasName("PK__Card_Pay__8E861397E3D35FD9");
 
                 entity.ToTable("Card_Payment");
 
@@ -122,13 +123,13 @@ namespace HealthcareProject.Models
                     .WithMany(p => p.CardPayment)
                     .HasForeignKey(d => d.BillingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Card_Paym__billi__47DBAE45");
+                    .HasConstraintName("FK__Card_Paym__billi__619B8048");
             });
 
             modelBuilder.Entity<CashPayment>(entity =>
             {
                 entity.HasKey(e => e.PaymentId)
-                    .HasName("PK__Cash_Pay__ED1FC9EA1EB1019A");
+                    .HasName("PK__Cash_Pay__ED1FC9EAA570F0BE");
 
                 entity.ToTable("Cash_Payment");
 
@@ -142,17 +143,19 @@ namespace HealthcareProject.Models
                     .HasColumnName("payment_date")
                     .HasColumnType("date");
 
+                entity.Property(e => e.ReceiveReceipt).HasColumnName("receive_receipt");
+
                 entity.HasOne(d => d.Billing)
                     .WithMany(p => p.CashPayment)
                     .HasForeignKey(d => d.BillingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Cash_Paym__billi__44FF419A");
+                    .HasConstraintName("FK__Cash_Paym__billi__6477ECF3");
             });
 
             modelBuilder.Entity<CheckPayment>(entity =>
             {
                 entity.HasKey(e => e.CheckNo)
-                    .HasName("PK__Check_Pa__C0EA50AF9F947D12");
+                    .HasName("PK__Check_Pa__C0EA50AF7A31AC3B");
 
                 entity.ToTable("Check_Payment");
 
@@ -170,11 +173,13 @@ namespace HealthcareProject.Models
                     .HasColumnName("payment_date")
                     .HasColumnType("date");
 
+                entity.Property(e => e.ReceiveReceipt).HasColumnName("receive_receipt");
+
                 entity.HasOne(d => d.Billing)
                     .WithMany(p => p.CheckPayment)
                     .HasForeignKey(d => d.BillingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Check_Pay__billi__4222D4EF");
+                    .HasConstraintName("FK__Check_Pay__billi__5EBF139D");
             });
 
             modelBuilder.Entity<DailyReport>(entity =>
@@ -362,7 +367,6 @@ namespace HealthcareProject.Models
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
                 entity.Property(e => e.Allergy)
-                    .IsRequired()
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
@@ -417,14 +421,15 @@ namespace HealthcareProject.Models
 
             modelBuilder.Entity<VisitRecord>(entity =>
             {
-                entity.HasKey(e => new { e.VisitDate, e.PatientId })
-                    .HasName("PK__Visit_Re__153471D163ECCB4E");
+                entity.HasKey(e => new { e.Visitid, e.PatientId })
+                    .HasName("PK__Visit_Re__79C7ABB75F6BA05B");
 
                 entity.ToTable("Visit_Record");
 
-                entity.Property(e => e.VisitDate)
-                    .HasColumnName("visit_date")
-                    .HasColumnType("date");
+                entity.Property(e => e.Visitid)
+                    .HasColumnName("visitid")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
@@ -435,6 +440,10 @@ namespace HealthcareProject.Models
                     .HasColumnName("prescription")
                     .HasMaxLength(500)
                     .IsUnicode(false);
+
+                entity.Property(e => e.VisitDate)
+                    .HasColumnName("visit_date")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.VisitReason)
                     .IsRequired()
@@ -448,13 +457,13 @@ namespace HealthcareProject.Models
                     .WithMany(p => p.VisitRecord)
                     .HasForeignKey(d => d.DoctorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Visit_Rec__docto__3C69FB99");
+                    .HasConstraintName("FK__Visit_Rec__docto__59063A47");
 
                 entity.HasOne(d => d.Patient)
                     .WithMany(p => p.VisitRecord)
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Visit_Rec__patie__3B75D760");
+                    .HasConstraintName("FK__Visit_Rec__patie__5812160E");
             });
 
             OnModelCreatingPartial(modelBuilder);

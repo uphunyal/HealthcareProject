@@ -9,6 +9,7 @@ namespace HealthcareProject.Models
         public int PaymentId { get; set; }
         public double PaymentAmount { get; set; }
         public int BillingId { get; set; }
+        public bool ReceiveReceipt { get; set; }
 
         public virtual Billing Billing { get; set; }
     }

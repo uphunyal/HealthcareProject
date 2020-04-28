@@ -11,6 +11,14 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Billings" asp-action="Index" method="get">
+   <p>Please use your billing id to find the invoice to proceed for payment!</p>
+    <p>
+        <input type="text" name="Searchstring">
+        <input type="submit" value="Find Invoice" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -47,8 +55,9 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.BillingId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.BillingId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.BillingId">Delete</a>
+
+                    <a asp-action="Create" asp-controller="CashPayments" asp-route-id="@item.BillingId">Cash Payment</a> |
+                    <a asp-action="Create" asp-controller="CheckPayments" asp-route-id="@item.BillingId">Check Payment</a> |
                 </td>
                 <td>
                     <div class="text-center">

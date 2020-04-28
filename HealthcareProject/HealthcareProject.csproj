@@ -5,6 +5,12 @@
     <UserSecretsId>aspnet-HealthcareProject-E43DD49E-161D-4225-9654-72C1DF077C89</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="Views\VisitRecords\Create.cshtml" />
+    <Content Remove="Views\VisitRecords\Delete.cshtml" />
+    <Content Remove="Views\VisitRecords\Details.cshtml" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
