@@ -4,98 +4,230 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@*<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ssn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Weight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Height)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Insurance)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bloodpressure)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pulse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentMisused)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Allergy)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ssn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Height)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Insurance)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bloodpressure)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pulse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentMisused)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Allergy)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PatientId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PatientId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PatientId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientEmail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ssn)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Weight)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Height)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Insurance)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bloodpressure)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pulse)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AppointmentMisused)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Allergy)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientEmail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ssn)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Weight)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Height)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Insurance)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bloodpressure)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pulse)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentMisused)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Allergy)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.PatientId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.PatientId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.PatientId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Patient Appointments Page</title>
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Patients/Index/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Patients/Index/assets/fonts/font-awesome.min.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Patients/Index/assets/css/styles.min.css">
+
+</head>
+
+<body>
+
+
+
+    <section>
+        <div class="row">
+            <div class="col">
+                <p style="font-size: 30px;filter: brightness(138%);background-color: #676161;">Upcoming Appointments</p>
+            </div>
+        </div>
+        <div class="row" id="appointments">
+            <!-- Start: Table With Search -->
+            <div class="col-md-12 d-flex search-table-col">
+                <span class="counter pull-right"></span>
+                <div class="table-responsive table-bordered table table-hover table-bordered results">
+                    <table class="table table-bordered table-hover">
+                        <thead class="border rounded-0 bill-header cs">
+                            <tr>
+                                <th id="trs-hd" class="col-lg-1">No.</th>
+                                <th id="trs-hd" class="col-lg-2">Patient Name</th>
+                                <th id="trs-hd" class="col-lg-2">Email</th>
+                                <th id="trs-hd" class="col-lg-2">Phone</th>
+
+                                @{ if (User.IsInRole("Staff"))
+                                    {
+                                        <th id="trs-hd-1" class="col-lg-2">Address</th>
+                                        <th id="trs-hd-1" class="col-lg-2">SSN</th>
+                                        <th id="trs-hd-1" class="col-lg-2">Actions</th>
+
+                                    }
+
+                                    else if (User.IsInRole("Nurse"))
+                                    {
+                                        <th id="trs-hd-1" class="col-lg-2">Actions</th>
+                                    }
+
+                                }
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int count = 1;}
+                            @foreach (var record in Model)
+                            {
+
+
+                            <tr>
+                                <td>@count</td>
+                                <td>@Html.DisplayFor(entry => record.PatientName)</td>
+                                <td>@Html.DisplayFor(entry => record.PatientEmail)</td>
+                                <td>@Html.DisplayFor(entry => record.Phone)</td>
+
+                                @{ if (User.IsInRole("Staff"))
+                                    {
+                                        <td>@Html.DisplayFor(entry => record.PatientAddress)</td>
+                                        <td>@Html.DisplayFor(entry => record.Ssn)</td>
+                                        <td>
+
+                                            <a asp-action="Edit" asp-route-id="@record.PatientId">
+                                                <button class="btn btn-success border rounded" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" data-bs-hover-animate="jello" style="margin-left: 5px;" type="submit" title="Modify Patient Info"><i class="fa fa-refresh" style="font-size: 15px;"></i></button>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@record.PatientId">
+                                                <button class="btn btn-danger" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" data-bs-hover-animate="wobble" style="margin-left: 5px;" type="submit" title="Delete Patient">
+
+                                                    <i class="fa fa-trash" style="font-size: 15px;"></i>
+                                                </button>
+                                            </a>
+                                        </td>
+
+                                    }
+
+
+                                    else if (User.IsInRole("Nurse"))
+                                    {
+                                        <td>
+
+                                            <a asp-action="Edit" asp-route-id="@record.PatientId">
+                                                <button class="btn btn-success border rounded" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" data-bs-hover-animate="jello" style="margin-left: 5px;" type="submit" title="Modify Patient Info"><i class="fa fa-refresh" style="font-size: 15px;"></i></button>
+                                            </a>
+                                            
+                                        </td>
+                                    }
+
+                                }
+
+                            </tr>
+                                count = count + 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End: Table With Search -->
+        </div>
+    </section>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Patients/Index/assets/js/jquery.min.js"></script>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Patients/Index/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Patients/Index/assets/js/script.min.js"></script>
+
+    </body>
+
+
+
+    @{ if (TempData["Error"] != null)
+        {
+            <script type="text/javascript">
+
+                alert("@TempData["Error"]");
+
+            </script>
+
+        }
+    }

@@ -23,16 +23,21 @@ namespace HealthcareProject
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
+        public IWebHostEnvironment Env { get; }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //For Runtime Compilation
+            var builder = services.AddControllersWithViews();
+
             // needed to load configuration from appsettings.json
             services.AddOptions();
 
@@ -60,7 +65,12 @@ namespace HealthcareProject
             services.AddHangfireServer();
 
 
-
+#if DEBUG
+            if (Env.IsDevelopment())
+            {
+                builder.AddRazorRuntimeCompilation();
+            }
+#endif
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

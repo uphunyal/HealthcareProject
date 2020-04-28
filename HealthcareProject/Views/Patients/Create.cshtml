@@ -83,6 +83,20 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
+
+@{ if (TempData["Error"] != null)
+    {
+        <script type="text/javascript">
+
+                alert("@TempData["Error"]");
+
+        </script>
+
+    }
+}
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

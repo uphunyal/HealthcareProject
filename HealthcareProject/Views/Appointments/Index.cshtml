@@ -3,63 +3,137 @@
 @{
     ViewData["Title"] = "Index";
 }
+@*
+    <h1>Index</h1>
 
-<h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ApptDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AppointmentReason)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientEmail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.VisitRecord)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Doctor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Patient)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApptDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentReason)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PatientEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VisitRecord)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.Allergy)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ApptId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ApptDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentReason)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VisitRecord)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Doctor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Patient)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApptDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentReason)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VisitRecord)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.Allergy)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ApptId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Patient Appointments Page</title>
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/fonts/font-awesome.min.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/css/styles.min.css">
+
+</head>
+
+<body>
+    <section>
+        <div class="row">
+            <div class="col">
+                <p style="font-size: 30px;filter: brightness(138%);background-color: #676161;">Upcoming Appointments</p>
+            </div>
+        </div>
+        <div class="row" id="appointments">
+            <!-- Start: Table With Search -->
+            <div class="col-md-12 d-flex search-table-col">
+                <span class="counter pull-right"></span>
+                <div class="table-responsive table-bordered table table-hover table-bordered results">
+                    <table class="table table-bordered table-hover">
+                        <thead class="border rounded-0 bill-header cs">
+
+                            <tr>
+                                <th id="trs-hd" class="col-lg-1"> I.D </th>
+                                <th id="trs-hd" class="col-lg-2">Patient Name</th>
+                                <th id="trs-hd" class="col-lg-2">Patient Email</th>
+                                <th id="trs-hd" class="col-lg-2">Appointment Date</th>
+                                <th id="trs-hd-1" class="col-lg-2">Actions</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var record in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(entry => record.ApptId)</td>
+                                    <td>@Html.DisplayFor(entry => record.Patient.PatientName)</td>
+                                    <td>@Html.DisplayFor(entry => record.Patient.PatientEmail)</td>
+                                    <td>@Html.DisplayFor(entry => record.ApptDate)</td>
+                                    <td>
+
+                                        <a asp-action="Edit" asp-route-id="@record.ApptId">
+                                            <button class="btn btn-success border rounded" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" data-bs-hover-animate="jello" style="margin-left: 5px;" type="submit" title="Modify Appointment"><i class="fa fa-refresh" style="font-size: 15px;"></i></button>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@record.ApptId">
+                                            <button class="btn btn-danger" data-toggle="tooltip" data-bs-tooltip="" data-placement="bottom" data-bs-hover-animate="wobble" style="margin-left: 5px;" type="submit" title="Delete Appointment">
+
+                                                <i class="fa fa-trash" style="font-size: 15px;"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End: Table With Search -->
+        </div>
+    </section>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/js/jquery.min.js"></script>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/js/script.min.js"></script>
+</body>
 </table>

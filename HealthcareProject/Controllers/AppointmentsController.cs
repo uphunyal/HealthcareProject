@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize]
     public class AppointmentsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -24,8 +26,33 @@ namespace HealthcareProject.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            var healthcarev1Context = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient);
-            return View(await healthcarev1Context.ToListAsync());
+            if (User.IsInRole("CEO"))
+            {
+                return NotFound();
+            }
+            else if (User.IsInRole("Staff"))
+            {
+                Console.WriteLine(" User is in Role");
+                var healthcareContext = _context.Appointment.Include("Doctor").Include("Patient");
+                return View(await healthcareContext.ToListAsync());
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                int DocId = (from doc in _context.Doctor
+                         where doc.DoctorEmail == User.Identity.Name
+                         select doc.DoctorId).FirstOrDefault();
+
+                Console.WriteLine(" Doctor is in Role");
+                var healthcareContext = _context.Appointment.Include("Doctor").Include("Patient").Where(p=>p.DoctorId == DocId);
+                return View(await healthcareContext.ToListAsync());
+            }
+            else {
+                var healthcareContext = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient).Where(c => c.PatientEmail == User.Identity.Name);
+
+                return View(await healthcareContext.ToListAsync());
+            }
+               
+            
         }
 
         // GET: Appointments/Details/5
@@ -51,9 +78,17 @@ namespace HealthcareProject.Controllers
         // GET: Appointments/Create
         public IActionResult Create()
         {
-            ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail");
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy");
-            return View();
+            if (User.IsInRole("Patient") || User.IsInRole("Staff"))
+            {
+                ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail");
+                ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
+                return View();
+            }
+
+            else
+            {
+                return NotFound();
+            }
         }
 
         // POST: Appointments/Create
@@ -65,6 +100,15 @@ namespace HealthcareProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Checking to see if the account exists
+                int count = _context.Patient.Where(p => p.PatientEmail == appointment.PatientEmail).Count();
+
+                if (count == 0)
+                {
+                    TempData["Error"] = "A patient with the entered email does not exist. Please create an account first.";
+                    return RedirectToAction("Create", "Patients");
+                }
+
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
 

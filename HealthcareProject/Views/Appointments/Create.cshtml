@@ -22,23 +22,43 @@
                 <input asp-for="AppointmentReason" class="form-control" />
                 <span asp-validation-for="AppointmentReason" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-gro">
+            @if (User.IsInRole("Patient"))
+            {
+                // <label asp-for="PatientEmail" class="control-label"></label>
+                <input type="hidden" asp-for="PatientEmail" class="form-control" value="@User.Identity.Name" />
+                <span asp-validation-for="PatientEmail" class="text-danger"></span>
+            }
+            else
+            {
                 <label asp-for="PatientEmail" class="control-label"></label>
                 <input asp-for="PatientEmail" class="form-control" />
                 <span asp-validation-for="PatientEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            }
+                </div>
+
+            @*<div class="form-group">
                 <label asp-for="PatientId" class="control-label"></label>
-                <select asp-for="PatientId" class ="form-control" asp-items="ViewBag.PatientId"></select>
-            </div>
+                <select asp-for="PatientId" class="form-control" asp-items="ViewBag.PatientId"></select>
+            </div>*@
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="VisitRecord" /> @Html.DisplayNameFor(model => model.VisitRecord)
+                    @{ if (User.IsInRole("Patient"))
+                        {
+                            <input type ="hidden" class="form-check-input" asp-for="VisitRecord" /> @Html.DisplayNameFor(model => model.VisitRecord)}
+
+                        else
+                        {
+                            <input class="form-check-input" asp-for="VisitRecord" /> @Html.DisplayNameFor(model => model.VisitRecord)
+                        }
+                    }
+
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="DoctorId" class="control-label"></label>
-                <select asp-for="DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>
+                <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

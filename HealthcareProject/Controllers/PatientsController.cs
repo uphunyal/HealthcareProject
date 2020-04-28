@@ -21,7 +21,26 @@ namespace HealthcareProject.Controllers
         // GET: Patients
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Patient.ToListAsync());
+            if (User.IsInRole("Staff"))
+            {
+                var healthcareContext = _context.Patient;
+                return View(await healthcareContext.ToListAsync());
+            }
+
+            else if (User.IsInRole("Nurse"))
+            {
+                //Write Query
+
+                var patients = _context.Patient;
+                return View(await patients.ToListAsync());
+            }
+
+
+
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: Patients/Details/5
@@ -45,7 +64,15 @@ namespace HealthcareProject.Controllers
         // GET: Patients/Create
         public IActionResult Create()
         {
-            return View();
+            //Only Staff can create a Patient
+            //If a patient tries to register himself, he is registered directly without coming to this controller.
+            if (User.IsInRole("Staff"))
+            { return View(); }
+
+            else
+            {
+                return NotFound();
+            }
         }
 
         // POST: Patients/Create
@@ -123,6 +150,11 @@ namespace HealthcareProject.Controllers
                 return NotFound();
             }
 
+            if (!User.IsInRole("Staff"))
+            {
+                return NotFound();
+            }
+
             var patient = await _context.Patient
                 .FirstOrDefaultAsync(m => m.PatientId == id);
             if (patient == null)
@@ -138,10 +170,36 @@ namespace HealthcareProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             var patient = await _context.Patient.FindAsync(id);
-            _context.Patient.Remove(patient);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            //Checking to see if the patient the person is trying to delete has active appointments
+            var query = _context.Patient.Where(p => p.PatientId == id).FirstOrDefault();
+            var appointment = _context.Appointment.Where(pat => pat.PatientEmail == query.PatientEmail).FirstOrDefault();
+
+            if (appointment == null)
+            {
+                try
+                {
+                    _context.Patient.Remove(patient);
+                    await _context.SaveChangesAsync();
+                }
+
+                catch (Exception e)
+                {
+                    TempData["Error"] = "Patients with active appointments cannot be deleted.";
+                    Console.WriteLine(e.Message.ToString());
+                }
+
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            else
+            {
+                TempData["Error"] = "Patients with active appointments cannot be deleted.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool PatientExists(int id)
