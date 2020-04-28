@@ -116,6 +116,52 @@ namespace HealthcareProject.Controllers
             }
             return View(patient);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMedical(int id, [Bind("PatientName,PatientEmail,PatientAddress,Phone,Ssn,Weight,Height,Insurance,Bloodpressure,Pulse,AppointmentMisused,PatientId,Allergy")] Patient patient)
+        {
+            if (id != patient.PatientId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(patient);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PatientExists(patient.PatientId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", "VisitRecords");
+            }
+            return RedirectToAction("Index", "VisitRecords");
+        }
+        // GET: Patients/Edit/5
+        public async Task<IActionResult> EditMedical(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var patient = await _context.Patient.FindAsync(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            return View("EditMedical");
+        }
 
         // GET: Patients/Delete/5
         public async Task<IActionResult> Delete(int? id)

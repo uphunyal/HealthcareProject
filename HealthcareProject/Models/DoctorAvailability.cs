@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HealthcareProject.Models
 {
-    public partial class DoctorUnavailability
+    public partial class DoctorAvailability
     {
-        [DataType(DataType.Date)]
-        public DateTime Unavailability { get; set; }
         public int DoctorId { get; set; }
         [DataType(DataType.Time)]
-        public DateTime UnavailableTime { get; set; }
-        public int UnavailabilityId { get; set; }
+        public DateTime AvailableTime { get; set; }
+        public int AvailabilityId { get; set; }
 
         public virtual Doctor Doctor { get; set; }
     }

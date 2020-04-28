@@ -6,11 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
     public class DoctorUnavailabilitiesController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -28,7 +26,7 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: DoctorUnavailabilities/Details/5
-        public async Task<IActionResult> Details(DateTime? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -37,7 +35,7 @@ namespace HealthcareProject.Controllers
 
             var doctorUnavailability = await _context.DoctorUnavailability
                 .Include(d => d.Doctor)
-                .FirstOrDefaultAsync(m => m.Unavailability == id);
+                .FirstOrDefaultAsync(m => m.UnavailabilityId == id);
             if (doctorUnavailability == null)
             {
                 return NotFound();
@@ -58,7 +56,7 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Unavailability,DoctorId")] DoctorUnavailability doctorUnavailability)
+        public async Task<IActionResult> Create([Bind("Unavailability,DoctorId,UnavailableTime,UnavailabilityId")] DoctorUnavailability doctorUnavailability)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +69,7 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: DoctorUnavailabilities/Edit/5
-        public async Task<IActionResult> Edit(DateTime? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -92,9 +90,9 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, [Bind("Unavailability,DoctorId")] DoctorUnavailability doctorUnavailability)
+        public async Task<IActionResult> Edit(int id, [Bind("Unavailability,DoctorId,UnavailableTime,UnavailabilityId")] DoctorUnavailability doctorUnavailability)
         {
-            if (id != doctorUnavailability.Unavailability)
+            if (id != doctorUnavailability.UnavailabilityId)
             {
                 return NotFound();
             }
@@ -108,7 +106,7 @@ namespace HealthcareProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorUnavailabilityExists(doctorUnavailability.Unavailability))
+                    if (!DoctorUnavailabilityExists(doctorUnavailability.UnavailabilityId))
                     {
                         return NotFound();
                     }
@@ -124,7 +122,7 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: DoctorUnavailabilities/Delete/5
-        public async Task<IActionResult> Delete(DateTime? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -133,7 +131,7 @@ namespace HealthcareProject.Controllers
 
             var doctorUnavailability = await _context.DoctorUnavailability
                 .Include(d => d.Doctor)
-                .FirstOrDefaultAsync(m => m.Unavailability == id);
+                .FirstOrDefaultAsync(m => m.UnavailabilityId == id);
             if (doctorUnavailability == null)
             {
                 return NotFound();
@@ -145,7 +143,7 @@ namespace HealthcareProject.Controllers
         // POST: DoctorUnavailabilities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(DateTime id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var doctorUnavailability = await _context.DoctorUnavailability.FindAsync(id);
             _context.DoctorUnavailability.Remove(doctorUnavailability);
@@ -153,9 +151,9 @@ namespace HealthcareProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DoctorUnavailabilityExists(DateTime id)
+        private bool DoctorUnavailabilityExists(int id)
         {
-            return _context.DoctorUnavailability.Any(e => e.Unavailability == id);
+            return _context.DoctorUnavailability.Any(e => e.UnavailabilityId == id);
         }
     }
 }

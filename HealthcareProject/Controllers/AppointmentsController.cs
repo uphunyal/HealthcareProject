@@ -31,7 +31,20 @@ namespace HealthcareProject.Controllers
         }
 
 
-       
+       /* public async Task<IActionResult> Select_DoctorandDate(int doctor_id, DateTime appt_date)
+        {
+
+            //Get unavailable times from given date and send the available times.
+            var searchContext = from p in _context.DoctorUnavailability
+                                where p.DoctorId == doctor_id && p.Unavailability == appt_date
+                                select p;
+            var unavailabletimes = searchContext.ToList();
+
+            List<String> possibleappointments = new List<string>();
+          *//*  possibleappointments.Add(""*//*
+
+            return View();
+        }*/
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -69,6 +82,7 @@ namespace HealthcareProject.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
 

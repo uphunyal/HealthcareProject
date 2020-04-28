@@ -8,6 +8,7 @@ namespace HealthcareProject.Models
         public Doctor()
         {
             Appointment = new HashSet<Appointment>();
+            DoctorAvailability = new HashSet<DoctorAvailability>();
             DoctorUnavailability = new HashSet<DoctorUnavailability>();
             Nurse = new HashSet<Nurse>();
             VisitRecord = new HashSet<VisitRecord>();
@@ -19,6 +20,7 @@ namespace HealthcareProject.Models
         public int DoctorId { get; set; }
 
         public virtual ICollection<Appointment> Appointment { get; set; }
+        public virtual ICollection<DoctorAvailability> DoctorAvailability { get; set; }
         public virtual ICollection<DoctorUnavailability> DoctorUnavailability { get; set; }
         public virtual ICollection<Nurse> Nurse { get; set; }
         public virtual ICollection<VisitRecord> VisitRecord { get; set; }

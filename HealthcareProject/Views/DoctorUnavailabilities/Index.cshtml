@@ -13,6 +13,12 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Unavailability)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnavailableTime)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Doctor)
             </th>
             <th></th>
@@ -22,12 +28,18 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Unavailability)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnavailableTime)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Unavailability">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Unavailability">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Unavailability">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.UnavailabilityId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.UnavailabilityId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.UnavailabilityId">Delete</a>
             </td>
         </tr>
 }

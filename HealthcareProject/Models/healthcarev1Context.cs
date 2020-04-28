@@ -22,6 +22,7 @@ namespace HealthcareProject.Models
         public virtual DbSet<CheckPayment> CheckPayment { get; set; }
         public virtual DbSet<DailyReport> DailyReport { get; set; }
         public virtual DbSet<Doctor> Doctor { get; set; }
+        public virtual DbSet<DoctorAvailability> DoctorAvailability { get; set; }
         public virtual DbSet<DoctorUnavailability> DoctorUnavailability { get; set; }
         public virtual DbSet<MedicalReport> MedicalReport { get; set; }
         public virtual DbSet<MedicalreportType> MedicalreportType { get; set; }
@@ -30,7 +31,6 @@ namespace HealthcareProject.Models
         public virtual DbSet<Patient> Patient { get; set; }
         public virtual DbSet<VisitRecord> VisitRecord { get; set; }
 
-        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -232,26 +232,52 @@ namespace HealthcareProject.Models
                 entity.Property(e => e.Salary).HasColumnName("salary");
             });
 
+            modelBuilder.Entity<DoctorAvailability>(entity =>
+            {
+                entity.HasKey(e => e.AvailabilityId)
+                    .HasName("PK__Doctor_a__86E3A801826D3B8A");
+
+                entity.ToTable("Doctor_availability");
+
+                entity.Property(e => e.AvailabilityId).HasColumnName("availability_id");
+
+                entity.Property(e => e.AvailableTime)
+                    .HasColumnName("available_time")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
+
+                entity.HasOne(d => d.Doctor)
+                    .WithMany(p => p.DoctorAvailability)
+                    .HasForeignKey(d => d.DoctorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Doctor_av__docto__787EE5A0");
+            });
+
             modelBuilder.Entity<DoctorUnavailability>(entity =>
             {
-                entity.HasKey(e => e.Unavailability)
-                    .HasName("PK__Doctor_u__1F48084FFCBB1AF4");
+                entity.HasKey(e => e.UnavailabilityId)
+                    .HasName("PK__tmp_ms_x__9B3B4434FB2D8864");
 
                 entity.ToTable("Doctor_unavailability");
+
+                entity.Property(e => e.UnavailabilityId).HasColumnName("unavailability_id");
+
+                entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
 
                 entity.Property(e => e.Unavailability)
                     .HasColumnName("unavailability")
                     .HasColumnType("date");
 
-                entity.Property(e => e.DoctorId)
-                    .HasColumnName("doctor_id")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.UnavailableTime)
+                    .HasColumnName("unavailable_time")
+                    .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Doctor)
                     .WithMany(p => p.DoctorUnavailability)
                     .HasForeignKey(d => d.DoctorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Doctor_un__docto__3F466844");
+                    .HasConstraintName("FK__Doctor_un__docto__6A30C649");
             });
 
             modelBuilder.Entity<MedicalReport>(entity =>

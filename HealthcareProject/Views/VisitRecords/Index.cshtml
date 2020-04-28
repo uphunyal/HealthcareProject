@@ -57,7 +57,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Patient.PatientName)
             </td>
-            <td><a asp-controller="Patients" asp-action="Edit" asp-route-id="@item.Patient.PatientId">Edit</a></td>
+            <td><a asp-controller="Patients" asp-action="EditMedical" asp-route-id="@item.Patient.PatientId">Edit</a></td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Visitid, pid = item.PatientId }) |
                 @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

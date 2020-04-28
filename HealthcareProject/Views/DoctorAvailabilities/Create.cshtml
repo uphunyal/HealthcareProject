@@ -1,4 +1,4 @@
-﻿@model HealthcareProject.Models.DoctorUnavailability
+﻿@model HealthcareProject.Models.DoctorAvailability
 
 @{
     ViewData["Title"] = "Create";
@@ -6,25 +6,20 @@
 
 <h1>Create</h1>
 
-<h4>DoctorUnavailability</h4>
+<h4>DoctorAvailability</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Unavailability" class="control-label"></label>
-                <input asp-for="Unavailability" class="form-control" />
-                <span asp-validation-for="Unavailability" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="DoctorId" class="control-label"></label>
                 <select asp-for="DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="UnavailableTime" class="control-label"></label>
-                <input asp-for="UnavailableTime" class="form-control" />
-                <span asp-validation-for="UnavailableTime" class="text-danger"></span>
+                <label asp-for="AvailableTime" class="control-label"></label>
+                <input asp-for="AvailableTime" class="form-control" />
+                <span asp-validation-for="AvailableTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
