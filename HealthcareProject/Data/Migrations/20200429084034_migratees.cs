@@ -2,7 +2,7 @@
 
 namespace HealthcareProject.Data.Migrations
 {
-    public partial class migratee : Migration
+    public partial class migratees : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

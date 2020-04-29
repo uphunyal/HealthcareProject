@@ -5,6 +5,7 @@ namespace HealthcareProject.Models
 {
     public partial class MonthlyReport
     {
+        public string Report_Id { get; set; }
         public DateTime ReportMonth { get; set; }
         public int NoPatients { get; set; }
         public string DoctorName { get; set; }

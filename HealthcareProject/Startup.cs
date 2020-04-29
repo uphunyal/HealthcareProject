@@ -35,6 +35,8 @@ namespace HealthcareProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+
             //For Runtime Compilation
             var builder = services.AddControllersWithViews();
 
@@ -78,10 +80,13 @@ namespace HealthcareProject
 
             services.AddDbContext<healthcarev1Context>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DataConnection")));
+                    Configuration.GetConnectionString("DataConnection")),ServiceLifetime.Transient);
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                  .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
             services.AddControllersWithViews();
             // https://github.com/aspnet/Hosting/issues/793
             // the IHttpContextAccessor service is not registered by default.
@@ -91,6 +96,7 @@ namespace HealthcareProject
             // configuration (resolvers, counter key builders)
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddRazorPages();
+            
           
         }
         //Create default accounts at startup if not present
@@ -255,11 +261,13 @@ namespace HealthcareProject
             RotativaConfiguration.Setup(env.ContentRootPath, "wwwroot/Rotativa");
             app.UseHangfireDashboard();
 
-             backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
-             backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());
-            recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(15, 00));
-             recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(14, 00));
- 
+             //backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
+           //  backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());
+            //backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateMonthlyReport());
+          //  recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(15, 00));
+           //  recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(14, 00));
+            //recurringJobManager.AddOrUpdate<JobScheduling>("Generate Monthly report", x => x.GenerateMonthlyReport(), Cron.Monthly(14, 00));
+
         }
     }
 }

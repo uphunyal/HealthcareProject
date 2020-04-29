@@ -1,0 +1,69 @@
+﻿@model IEnumerable<HealthcareProject.Models.DailyReport>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Patient Appointments Page</title>
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/fonts/font-awesome.min.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
+    <link rel="stylesheet" href="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/css/styles.min.css">
+
+</head>
+
+<body>
+    <section>
+        <div class="row">
+            <div class="col">
+                <p style="font-size: 30px;filter: brightness(138%);background-color: #676161;">Daily Report Summary</p>
+            </div>
+        </div>
+        <div class="row" id="appointments">
+            <!-- Start: Table With Search -->
+           
+                
+                <div class="table-responsive table-bordered table table-hover table-bordered results">
+                    <table class="table table-bordered table-hover">
+                        <thead class="border rounded-0 bill-header cs">
+
+                            <tr>
+                                <th id="trs-hd" class="col-lg-1"> Count</th>
+                                <th id="trs-hd" class="col-lg-2">Doctor Name</th>
+                                <th id="trs-hd" class="col-lg-2">No. of Patients</th>
+                                <th id="trs-hd" class="col-lg-2">Daily Income</th>
+                          
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @{ int count = 1;}
+                            @foreach (var record in Model)
+                            {
+                            <tr>
+                                <td>@count</td>
+                                <td>@Html.DisplayFor(entry => record.DoctorName)</td>
+                                <td>@Html.DisplayFor(entry => record.NoPatients)</td>
+                                <td>@Html.DisplayFor(entry => record.DailyIncome)</td>
+                                <td>
+                                </td>
+                            </tr>
+                                count = count + 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+           
+            
+        </div>
+    </section>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/js/jquery.min.js"></script>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/BootStrap Views Assets - Do Not Touch/Appointments/Index/assets/js/script.min.js"></script>
+</body>
+</table>

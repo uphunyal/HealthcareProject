@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthcareProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200429080536_migratee")]
-    partial class migratee
+    [Migration("20200429084034_migratees")]
+    partial class migratees
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Http;
+using Rotativa.AspNetCore;
 
 namespace HealthcareProject.Controllers
 {
@@ -82,15 +84,19 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DateTime ReportDate, string DocEmail)
+        public async Task<IActionResult> Create(IFormCollection collection)
         {
+
+            var Date = DateTime.Parse(collection.ToArray()[0].Value).ToShortDateString();
+
             if (ModelState.IsValid)
             {
-                //_context.Add(dailyReport);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                var reportContext = _context.DailyReport.AsEnumerable().Where(rec => rec.ReportDate.ToShortDateString() == Date).ToList();
+
+                return new ViewAsPdf("View",reportContext);
             }
-            return View();
+            return NotFound();
         }
 
         // GET: DailyReports/Edit/5
