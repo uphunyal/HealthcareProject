@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Appointments\**" />
+    <Content Remove="Views\Appointments\**" />
+    <EmbeddedResource Remove="Views\Appointments\**" />
+    <None Remove="Views\Appointments\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\AppointmentsController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\VisitRecords\Create.cshtml" />
     <Content Remove="Views\VisitRecords\Delete.cshtml" />
     <Content Remove="Views\VisitRecords\Details.cshtml" />

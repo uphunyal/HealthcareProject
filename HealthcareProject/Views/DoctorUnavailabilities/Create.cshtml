@@ -13,18 +13,13 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Unavailability" class="control-label"></label>
-                <input asp-for="Unavailability" class="form-control" />
-                <span asp-validation-for="Unavailability" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="DoctorId" class="control-label"></label>
                 <select asp-for="DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="UnavailableTime" class="control-label"></label>
-                <input asp-for="UnavailableTime" class="form-control" />
-                <span asp-validation-for="UnavailableTime" class="text-danger"></span>
+                <label asp-for="Unavailable" class="control-label"></label>
+                <input asp-for="Unavailable" class="form-control" />
+                <span asp-validation-for="Unavailable" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

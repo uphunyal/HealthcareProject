@@ -6,47 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
-    public class AppointmentsController : Controller
+    public class Appointments1Controller : Controller
     {
         private readonly healthcarev1Context _context;
-      
 
-        public AppointmentsController(healthcarev1Context context)
+        public Appointments1Controller(healthcarev1Context context)
         {
             _context = context;
-          
         }
 
-        // GET: Appointments
-        public async Task<IActionResult> Index( )
+        // GET: Appointments1
+        public async Task<IActionResult> Index()
         {
-           
             var healthcarev1Context = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient);
+            
+
             return View(await healthcarev1Context.ToListAsync());
         }
 
-
-       /* public async Task<IActionResult> Select_DoctorandDate(int doctor_id, DateTime appt_date)
-        {
-
-            //Get unavailable times from given date and send the available times.
-            var searchContext = from p in _context.DoctorUnavailability
-                                where p.DoctorId == doctor_id && p.Unavailability == appt_date
-                                select p;
-            var unavailabletimes = searchContext.ToList();
-
-            List<String> possibleappointments = new List<string>();
-          *//*  possibleappointments.Add(""*//*
-
-            return View();
-        }*/
-        // GET: Appointments/Details/5
+        // GET: Appointments1/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -66,7 +47,6 @@ namespace HealthcareProject.Controllers
             return View(appointment);
         }
 
-        // GET: Appointments/Create
         public IActionResult Create(int? doctor_id, DateTime? appt_date)
         {
             if (!(doctor_id == null))
@@ -90,7 +70,7 @@ namespace HealthcareProject.Controllers
                 }
                 //Get the time patient can make appointment for
                 var list3 = availabletimes.Except(unavailabletimes).ToList();
-               
+
                 foreach (var x in list3)
                 {
                     Console.WriteLine("The available times : " + x);
@@ -114,8 +94,7 @@ namespace HealthcareProject.Controllers
 
             return View();
         }
-
-        // POST: Appointments/Create
+        // POST: Appointments1/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -124,20 +103,28 @@ namespace HealthcareProject.Controllers
         {
             if (ModelState.IsValid)
             {
-               
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
-                Console.WriteLine("The appointment tiem is " + appointment.ApptDate);
+
+                //Add the user to misused user database
+                
+                if (User.IsInRole("Patient"))
+                {
+                    if (!UserExists(User.Identity.Name))
+                    {
+                        var newuser = new MisusedUser { UserEmail = User.Identity.Name, Misusedcount = 0 };
+                    }
+                }
 
                 //Remove from available time
-                var appointment_context = _context.DoctorAvailability.Where(a => a.AvailableTime == appointment.ApptDate && a.DoctorId==appointment.DoctorId).FirstOrDefault();
-            
+                var appointment_context = _context.DoctorAvailability.Where(a => a.AvailableTime == appointment.ApptDate && a.DoctorId == appointment.DoctorId).FirstOrDefault();
+
                 _context.DoctorAvailability.Remove(appointment_context);
                 await _context.SaveChangesAsync();
 
                 //Add to unavailable time
 
-              var addtime = new DoctorUnavailability { DoctorId = appointment.DoctorId, Unavailable = appointment.ApptDate};
+                var addtime = new DoctorUnavailability { DoctorId = appointment.DoctorId, Unavailable = appointment.ApptDate };
                 _context.DoctorUnavailability.Add(addtime);
                 await _context.SaveChangesAsync();
 
@@ -148,7 +135,7 @@ namespace HealthcareProject.Controllers
             return View(appointment);
         }
 
-      /*  // GET: Appointments/Edit/5
+        // GET: Appointments1/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -166,7 +153,7 @@ namespace HealthcareProject.Controllers
             return View(appointment);
         }
 
-        // POST: Appointments/Edit/5
+        // POST: Appointments1/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -182,13 +169,6 @@ namespace HealthcareProject.Controllers
             {
                 try
                 {
-                    if (appointment.VisitRecord==true)
-                    {
-                        var record = new VisitRecord { VisitDate = DateTime.Now, VisitReason = appointment.AppointmentReason, Prescription = "N/A", PatientId = (int)appointment.PatientId, DoctorId = appointment.DoctorId, Visited = false, Visitid= Guid.NewGuid().ToString() };
-                        _context.Add(record);
-                        await _context.SaveChangesAsync();
-
-                    }
                     _context.Update(appointment);
                     await _context.SaveChangesAsync();
                 }
@@ -206,11 +186,11 @@ namespace HealthcareProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", appointment.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
-        }*/
+        }
 
-        // GET: Appointments/Delete/5
+        // GET: Appointments1/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -230,31 +210,72 @@ namespace HealthcareProject.Controllers
             return View(appointment);
         }
 
-        // POST: Appointments/Delete/5
+        // POST: Appointments1/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var appointment = await _context.Appointment.FindAsync(id);
+
+
+            var appointment1 = from p in _context.Appointment
+                                where p.ApptId==id
+                                select p;
+            var apptid = appointment1.ToList();
+
+            var searchContext = from p in _context.MisusedUser
+                                where p.UserEmail==User.Identity.Name
+                                select p.Misusedcount;
+
+            //Update misuse count or deny permission to cancel appointment based on misuse count.
+            if (User.IsInRole("Patient")) { 
+           foreach(var x in searchContext)
+            {
+                if (x > 5)
+                {
+                    return View("PermissionDenied");
+                }
+                else
+                {
+                    int misusecount = x + 1;
+                    var findemail = await _context.MisusedUser.FindAsync(User.Identity.Name);
+                    findemail.Misusedcount = misusecount;
+                    await _context.SaveChangesAsync();
+
+                }
+            }
+            }
+
+            foreach (var x in apptid)
+            {
+                //Remove from unvailable time
+                var appointment_context = _context.DoctorUnavailability.Where(a => a.Unavailable == x.ApptDate && a.DoctorId == x.DoctorId).FirstOrDefault();
+                _context.DoctorUnavailability.Remove(appointment_context);
+                await _context.SaveChangesAsync();
+
+                //Add to available time
+
+                var addtime = new DoctorAvailability { DoctorId = x.DoctorId, AvailableTime = x.ApptDate };
+                _context.DoctorAvailability.Add(addtime);
+                await _context.SaveChangesAsync();
+            }
+           
+
+         
+           
             _context.Appointment.Remove(appointment);
             await _context.SaveChangesAsync();
-
-
-            /*  //Remove from unvailable time
-              var appointment_context = _context.DoctorUnavailability.Where(a => a.UnavailableTime == appointment.ApptDate && a.DoctorId == appointment.DoctorId).FirstOrDefault();
-              _context.DoctorUnavailability.Remove(appointment_context);
-              await _context.SaveChangesAsync();
-
-              //Add to available time
-
-              var addtime = new DoctorAvailability { DoctorId = appointment.DoctorId, AvailableTime= appointment.ApptDate };
-              return RedirectToAction(nameof(Index));*/
+             
             return RedirectToAction(nameof(Index));
         }
 
         private bool AppointmentExists(int id)
         {
             return _context.Appointment.Any(e => e.ApptId == id);
+        }
+        private bool UserExists(string id)
+        {
+            return _context.MisusedUser.Any(e => e.UserEmail == id);
         }
     }
 }

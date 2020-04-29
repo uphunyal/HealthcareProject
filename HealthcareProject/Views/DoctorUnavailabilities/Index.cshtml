@@ -13,10 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Unavailability)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnavailableTime)
+                @Html.DisplayNameFor(model => model.Unavailable)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Doctor)
@@ -28,10 +25,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Unavailability)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnavailableTime)
+                @Html.DisplayFor(modelItem => item.Unavailable)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)

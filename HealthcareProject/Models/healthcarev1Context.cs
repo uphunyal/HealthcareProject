@@ -26,13 +26,13 @@ namespace HealthcareProject.Models
         public virtual DbSet<DoctorUnavailability> DoctorUnavailability { get; set; }
         public virtual DbSet<MedicalReport> MedicalReport { get; set; }
         public virtual DbSet<MedicalreportType> MedicalreportType { get; set; }
+        public virtual DbSet<MisusedUser> MisusedUser { get; set; }
         public virtual DbSet<MonthlyReport> MonthlyReport { get; set; }
         public virtual DbSet<Nurse> Nurse { get; set; }
         public virtual DbSet<Patient> Patient { get; set; }
         public virtual DbSet<VisitRecord> VisitRecord { get; set; }
 
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+              protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Appointment>(entity =>
             {
@@ -52,7 +52,7 @@ namespace HealthcareProject.Models
 
                 entity.Property(e => e.ApptDate)
                     .HasColumnName("appt_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
 
@@ -257,7 +257,7 @@ namespace HealthcareProject.Models
             modelBuilder.Entity<DoctorUnavailability>(entity =>
             {
                 entity.HasKey(e => e.UnavailabilityId)
-                    .HasName("PK__tmp_ms_x__9B3B4434FB2D8864");
+                    .HasName("PK__Doctor_u__9B3B44342AF5EFFA");
 
                 entity.ToTable("Doctor_unavailability");
 
@@ -265,19 +265,15 @@ namespace HealthcareProject.Models
 
                 entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
 
-                entity.Property(e => e.Unavailability)
-                    .HasColumnName("unavailability")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.UnavailableTime)
-                    .HasColumnName("unavailable_time")
+                entity.Property(e => e.Unavailable)
+                    .HasColumnName("unavailable")
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Doctor)
                     .WithMany(p => p.DoctorUnavailability)
                     .HasForeignKey(d => d.DoctorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Doctor_un__docto__6A30C649");
+                    .HasConstraintName("FK__Doctor_un__docto__7D439ABD");
             });
 
             modelBuilder.Entity<MedicalReport>(entity =>
@@ -329,6 +325,19 @@ namespace HealthcareProject.Models
                     .HasColumnName("report_type")
                     .HasMaxLength(20)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<MisusedUser>(entity =>
+            {
+                entity.HasKey(e => e.UserEmail)
+                    .HasName("PK__MisusedU__B0FBA21330C7B7C7");
+
+                entity.Property(e => e.UserEmail)
+                    .HasColumnName("user_email")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Misusedcount).HasColumnName("misusedcount");
             });
 
             modelBuilder.Entity<MonthlyReport>(entity =>

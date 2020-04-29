@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-controller="Appointments" asp-action="Create" method="get">
+<form asp-controller="Appointments1" asp-action="Create" method="get">
     <p>Please use your billing id to find the invoice to proceed for payment!</p>
     <p>
         DoctorId: <input type="text" name="doctor_id">
@@ -60,7 +60,7 @@
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Patient.Allergy)
+                @Html.DisplayFor(modelItem => item.Patient.PatientEmail)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ApptId">Edit</a> |
