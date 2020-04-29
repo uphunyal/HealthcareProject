@@ -78,6 +78,7 @@ namespace HealthcareProject.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                  
                     await _userManager.AddToRoleAsync(user, "Patient");
                     //Add user account created from homepage to patient role
                     _logger.LogInformation("User created a new account with password.");

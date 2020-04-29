@@ -26,7 +26,7 @@ namespace HealthcareProject.Controllers
 
             return View(await healthcarev1Context.ToListAsync());
         }
-
+        
         // GET: Appointments1/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -46,6 +46,8 @@ namespace HealthcareProject.Controllers
 
             return View(appointment);
         }
+
+
 
         public IActionResult Create(int? doctor_id, DateTime? appt_date)
         {
@@ -103,8 +105,6 @@ namespace HealthcareProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
 
                 //Add the user to misused user database
                 
@@ -112,9 +112,14 @@ namespace HealthcareProject.Controllers
                 {
                     if (!UserExists(User.Identity.Name))
                     {
+                        Console.WriteLine("My email is" + User.Identity.Name);
                         var newuser = new MisusedUser { UserEmail = User.Identity.Name, Misusedcount = 0 };
+                        _context.MisusedUser.Add(newuser);
+                        await _context.SaveChangesAsync();
                     }
                 }
+                _context.Add(appointment);
+                await _context.SaveChangesAsync();
 
                 //Remove from available time
                 var appointment_context = _context.DoctorAvailability.Where(a => a.AvailableTime == appointment.ApptDate && a.DoctorId == appointment.DoctorId).FirstOrDefault();
@@ -169,6 +174,11 @@ namespace HealthcareProject.Controllers
             {
                 try
                 {
+                    if (appointment.VisitRecord == true) {
+                        var addtovisit = new VisitRecord { DoctorId = appointment.DoctorId, PatientId = (int)appointment.PatientId, Prescription = "N/A", VisitDate = appointment.ApptDate, VisitReason = appointment.AppointmentReason, Visited = false, Visitid = Guid.NewGuid().ToString() };
+                        _context.Add(addtovisit);
+                        await _context.SaveChangesAsync();
+                    }
                     _context.Update(appointment);
                     await _context.SaveChangesAsync();
                 }
@@ -223,28 +233,31 @@ namespace HealthcareProject.Controllers
                                 select p;
             var apptid = appointment1.ToList();
 
-            var searchContext = from p in _context.MisusedUser
+
+            var misusecount = from p in _context.MisusedUser
                                 where p.UserEmail==User.Identity.Name
                                 select p.Misusedcount;
+            int count = misusecount.FirstOrDefault();
+
 
             //Update misuse count or deny permission to cancel appointment based on misuse count.
-            if (User.IsInRole("Patient")) { 
-           foreach(var x in searchContext)
+            if (User.IsInRole("Patient"))
             {
-                if (x > 5)
+
+                if (count > 5)
                 {
                     return View("PermissionDenied");
                 }
                 else
                 {
-                    int misusecount = x + 1;
+                    count += 1;
                     var findemail = await _context.MisusedUser.FindAsync(User.Identity.Name);
-                    findemail.Misusedcount = misusecount;
+                    findemail.Misusedcount = count;
                     await _context.SaveChangesAsync();
 
                 }
             }
-            }
+           
 
             foreach (var x in apptid)
             {

@@ -49,7 +49,7 @@ namespace HealthcareProject.Controllers
         // GET: CheckPayments/Create
         public IActionResult Create(int id)
         {
-            ViewData["PaymentAmount"] = new SelectList(_context.Billing, "BillingId", "BillingAmount", id);
+            ViewData["PaymentAmount"] = new SelectList(_context.Billing.Where(c=>c.BillingId==id), "BillingId", "BillingAmount");
             ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", id);
 
             return View();
@@ -122,10 +122,10 @@ namespace HealthcareProject.Controllers
 
 
                 }
-                return RedirectToAction(nameof(Index));
+                return View("CheckPaymentSuccessful");
             }
             ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", checkPayment.BillingId);
-            return View(checkPayment);
+            return View("CheckPaymentSuccessful");
         }
 
         // GET: CheckPayments/Edit/5

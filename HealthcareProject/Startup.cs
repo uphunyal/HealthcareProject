@@ -19,6 +19,8 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Rotativa.AspNetCore;
 using Stripe;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using HealthcareProject.Services;
 
 namespace HealthcareProject
 {
@@ -74,6 +76,12 @@ namespace HealthcareProject
                  .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+
+            // requires
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
             // https://github.com/aspnet/Hosting/issues/793
             // the IHttpContextAccessor service is not registered by default.
             // the clientId/clientIp resolvers use it.
@@ -82,6 +90,7 @@ namespace HealthcareProject
             // configuration (resolvers, counter key builders)
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
         }
         //Create default accounts at startup if not present
@@ -249,6 +258,7 @@ namespace HealthcareProject
 
             /* backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
              backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());*/
+             //Clear Appointment at 8 Pm
             recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(15, 00));
             /* recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(14, 00));
  */

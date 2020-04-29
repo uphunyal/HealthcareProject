@@ -148,7 +148,7 @@ namespace HealthcareProject.Controllers
         // GET: Billings/Create
         public IActionResult Create()
         {
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientId");
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
             return View();
         }
 
@@ -218,7 +218,7 @@ namespace HealthcareProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", billing.PatientId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", billing.PatientId);
             return View(billing);
         }
 

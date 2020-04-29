@@ -48,7 +48,7 @@ namespace HealthcareProject.Controllers
         // GET: CashPayments/Create
         public IActionResult Create(int id)
         {
-            ViewData["PaymentAmount"] = new SelectList(_context.Billing, "BillingId", "BillingAmount", id);
+            ViewData["PaymentAmount"] = new SelectList(_context.Billing.Where(c => c.BillingId == id), "BillingId", "BillingAmount");
             ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", id);
 
             return View();
@@ -111,10 +111,10 @@ namespace HealthcareProject.Controllers
                         smtp.Send(message);
                     }
                 }
-                    return RedirectToAction(nameof(Index));
+                return View("CashPaymentSuccessful");
             }
             ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", cashPayment.BillingId);
-            return View(cashPayment);
+            return View("CashPaymentSuccessful");
         }
 
         // GET: CashPayments/Edit/5

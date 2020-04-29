@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HealthcareProject.Models
 {
@@ -11,7 +12,7 @@ namespace HealthcareProject.Models
             CashPayment = new HashSet<CashPayment>();
             CheckPayment = new HashSet<CheckPayment>();
         }
-
+        [DataType(DataType.DateTime)]
         public DateTime BillingDate { get; set; }
         public double BillingAmount { get; set; }
         public int BillingId { get; set; }

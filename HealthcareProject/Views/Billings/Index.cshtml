@@ -42,7 +42,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BillingDate)
+                    @item.BillingDate.Date.ToShortDateString()
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.BillingAmount)
@@ -51,7 +51,7 @@
                     @Html.DisplayFor(modelItem => item.Paid)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Patient.Allergy)
+                    @Html.DisplayFor(modelItem => item.Patient.PatientName)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.BillingId">Edit</a> |

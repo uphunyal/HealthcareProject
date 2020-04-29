@@ -4,13 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Appointment System</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<p> You can only have one active appointment at a time. Please delete current appointment if you want to change or book another appointment!</p>
 <form asp-controller="Appointments1" asp-action="Create" method="get">
-    <p>Please use your billing id to find the invoice to proceed for payment!</p>
+    <p>Select doctor and date to book an appointment!</p>
     <p>
         DoctorId: <input type="text" name="doctor_id">
         Date:<input type="date" name="appt_date">
