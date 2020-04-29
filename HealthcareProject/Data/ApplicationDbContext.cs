@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using HealthcareProject.Models;
 
 namespace HealthcareProject.Data
 {
@@ -12,5 +13,6 @@ namespace HealthcareProject.Data
             : base(options)
         {
         }
+        public DbSet<HealthcareProject.Models.MonthlyReport> MonthlyReport { get; set; }
     }
 }

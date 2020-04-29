@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Rotativa.AspNetCore;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize(Roles ="CEO")]
     public class MonthlyReportsController : Controller
     {
+        
         private readonly healthcarev1Context _context;
 
         public MonthlyReportsController(healthcarev1Context context)
@@ -53,15 +58,16 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReportMonth,NoPatients,DoctorName,MonthlyIncome")] MonthlyReport monthlyReport)
+        public async Task<IActionResult> Create(IFormCollection collection)
         {
+            var Date = (DateTime.Parse(collection.ToArray()[0].Value).ToShortDateString().Split("/"))[0];
+
             if (ModelState.IsValid)
             {
-                _context.Add(monthlyReport);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var monthlyReports = _context.MonthlyReport.AsEnumerable().Where(rec => (rec.ReportMonth.ToShortDateString().Split("/"))[0] == Date).ToList();
+                return new ViewAsPdf("View", monthlyReports);
             }
-            return View(monthlyReport);
+            return NotFound();
         }
 
         // GET: MonthlyReports/Edit/5
