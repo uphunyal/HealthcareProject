@@ -9,6 +9,16 @@ using HealthcareProject.Models;
 
 namespace HealthcareProject.Controllers
 {
+    //For Report Generation
+    public class Report
+    {
+        public DateTime ReportDate;
+ 
+        public string DoctorEmail;
+
+    }
+
+
     public class DailyReportsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -21,16 +31,27 @@ namespace HealthcareProject.Controllers
         // GET: DailyReports
         public async Task<IActionResult> Index()
         {
+           
+
             return View(await _context.DailyReport.ToListAsync());
         }
 
         // GET: DailyReports/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            if (!User.IsInRole("CEO"))
+            {
+                return NotFound();
+            }
             if (id == null)
             {
                 return NotFound();
             }
+            int.TryParse(id, out int intId);
+
+            var doctor = _context.Doctor.Where(doc => doc.DoctorId == intId);
+
+
 
             var dailyReport = await _context.DailyReport
                 .FirstOrDefaultAsync(m => m.ReportId == id);
@@ -45,6 +66,14 @@ namespace HealthcareProject.Controllers
         // GET: DailyReports/Create
         public IActionResult Create()
         {
+
+            IEnumerable<SelectListItem> Doctors = _context.Doctor.Select(doc => new SelectListItem
+            {
+                Value = doc.DoctorEmail,
+                Text = doc.DoctorEmail
+            }) ;
+            ViewBag.DoctorEmail = Doctors;
+
             return View();
         }
 
@@ -53,15 +82,15 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReportDate,NoPatients,ReportId,DoctorName,DailyIncome")] DailyReport dailyReport)
+        public async Task<IActionResult> Create(DateTime ReportDate, string DocEmail)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dailyReport);
+                //_context.Add(dailyReport);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(dailyReport);
+            return View();
         }
 
         // GET: DailyReports/Edit/5

@@ -255,11 +255,11 @@ namespace HealthcareProject
             RotativaConfiguration.Setup(env.ContentRootPath, "wwwroot/Rotativa");
             app.UseHangfireDashboard();
 
-            /* backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
-             backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());*/
+             backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
+             backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());
             recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(15, 00));
-            /* recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(14, 00));
- */
+             recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(14, 00));
+ 
         }
     }
 }

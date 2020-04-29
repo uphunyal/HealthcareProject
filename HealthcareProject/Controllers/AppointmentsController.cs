@@ -33,7 +33,7 @@ namespace HealthcareProject.Controllers
             else if (User.IsInRole("Staff"))
             {
                 Console.WriteLine(" User is in Role");
-                var healthcareContext = _context.Appointment.Include("Doctor").Include("Patient");
+                var healthcareContext = _context.Appointment.Include(app => app.Patient).Include(app=>app.Doctor);
                 return View(await healthcareContext.ToListAsync());
             }
             else if (User.IsInRole("Doctor"))
