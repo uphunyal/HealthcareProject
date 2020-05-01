@@ -6,11 +6,11 @@
 
 <h1>Appointment System</h1>
 
-<p> You can only have one active appointment at a time. Please delete current appointment if you want to change or book another appointment!</p>
+<p> A patient can only have one active appointment at a time. Please delete current appointment if you want to change or book another appointment!</p>
 <form asp-controller="Appointments1" asp-action="Create" method="get">
-    <p>Select doctor and date to book an appointment!</p>
+    <p>Select doctor and date to book an appointment!</p>   <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Get your doctor ID here!</a>
     <p>
-        DoctorId: <input type="text" name="doctor_id">
+        DoctorId: <input type="number" name="doctor_id">
         Date:<input type="date" name="appt_date">
         <input type="submit" value="Find Appointment" />
     </p>
@@ -69,6 +69,7 @@
                         <td>
 
                             <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
+                           
                             <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
                         </td>
                     </tr>
@@ -98,6 +99,7 @@
                     </td>
                     <td>
 
+                        <a asp-action="Edit" asp-route-id="@item.ApptId">Update</a>
                         <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
                     </td>

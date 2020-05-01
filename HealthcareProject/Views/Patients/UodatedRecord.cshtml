@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "UodatedRecord";
+}
+
+<h1>Uodated Record</h1>
+@if (User.IsInRole("Doctor") || User.IsInRole("Nurse"))
+{
+    <p>You successfully updated patient medical record regarding height, weight, pulse, allergy, and blood pressure.</p>
+
+    <div>
+        <a asp-controller="VisitRecords" asp-action="Index">Back to Your Patient List</a>
+    </div>
+}
+
+else
+{<p>Personal Info updated!</p>
+    <div>
+        <a  asp-action="Index">Go Back</a>
+    </div>}

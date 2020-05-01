@@ -81,7 +81,17 @@
             }
             @if (User.IsInRole("Doctor") || User.IsInRole("Nurse"))
             {
+                <input type="hidden" asp-for="PatientId" />
+                <div class="form-group">
+                    <label asp-for="PatientName" class="control-label">Name</label>
+                    <input asp-for="PatientName" class="form-control" />
+                    <span asp-validation-for="PatientName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
 
+                    <input asp-for="PatientEmail" class="form-control" />
+                    <span asp-validation-for="PatientEmail" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="Weight" class="control-label"></label>
                     <input asp-for="Weight" class="form-control" />

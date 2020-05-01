@@ -13,7 +13,7 @@ using Rotativa.AspNetCore;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize(Roles = "Staff")]
+ 
     public class BillingsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -25,28 +25,42 @@ namespace HealthcareProject.Controllers
 
         [AllowAnonymous]
         // GET: Billings
-        public async Task<IActionResult> Index(string searchstring)
+        public async Task<IActionResult> Index(int searchstring)
         {
-            if (!String.IsNullOrEmpty(searchstring))
+            Console.WriteLine("I print " + searchstring);
+            if  (!String.IsNullOrEmpty(searchstring.ToString())&&searchstring!=0)
             {
-                var searchContext = _context.Billing.Include(b => b.Patient).Where(c=>c.BillingId==Int32.Parse(searchstring));
+                Console.Write("1");
+                var searchContext = _context.Billing.Include(b => b.Patient).Where(c => c.BillingId == searchstring);
                 return View(await searchContext.ToListAsync());
             }
-            if(User.Identity.IsAuthenticated && User.IsInRole("Staff")) { 
-            var healthcarev1Context = _context.Billing.Include(b => b.Patient);
-            return View(await healthcarev1Context.ToListAsync());
-            }
-            if (User.Identity.IsAuthenticated && User.IsInRole("CEO"))
+            if (User.IsInRole("Staff"))
             {
+                Console.Write("2");
                 var healthcarev1Context = _context.Billing.Include(b => b.Patient);
                 return View(await healthcarev1Context.ToListAsync());
             }
-            if (User.Identity.IsAuthenticated && User.IsInRole("Patient"))
+            if (User.IsInRole("CEO"))
             {
-                var healthcarev1Context = _context.Billing.Include(b => b.Patient).Where(p=>p.Patient.PatientEmail==User.Identity.Name);
+                Console.Write("2");
+                var healthcarev1Context = _context.Billing.Include(b => b.Patient);
                 return View(await healthcarev1Context.ToListAsync());
             }
-            return View("SearchInvoice");
+            else if (User.IsInRole("Patient"))
+            {
+                Console.Write("3");
+                var healthcarev1Context = _context.Billing.Include(b => b.Patient).Where(p => p.Patient.PatientEmail == User.Identity.Name);
+                return View(await healthcarev1Context.ToListAsync());
+            }
+
+
+            else if (User.IsInRole("Nurse") || User.IsInRole("Doctor"))
+            {
+                Console.Write("4");
+                return View();
+            }
+            else return View();
+
         }
 
         [AllowAnonymous]
@@ -164,14 +178,14 @@ namespace HealthcareProject.Controllers
             }
             
         }
-
+        [Authorize(Roles ="Staff")]
         // GET: Billings/Create
         public IActionResult Create()
         {
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
             return View();
         }
-
+        [Authorize(Roles = "Staff")]
         // POST: Billings/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

@@ -5,42 +5,53 @@
 }
 
 <h1>Index</h1>
-
+@if (User.IsInRole("CEO")) { 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+}
 <table class="table">
     <thead>
         <tr>
+            <th>Doctor ID</th>
             <th>
                 @Html.DisplayNameFor(model => model.DoctorName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DoctorEmail)
-            </th>
-            <th></th>
-        </tr>
+            @if (User.IsInRole("CEO"))
+            {
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Salary)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DoctorEmail)
+                </th>}
+
+                <th></th>
+            </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>@item.DoctorId </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DoctorName)
             </td>
+@if (User.IsInRole("CEO"))
+{
+
             <td>
                 @Html.DisplayFor(modelItem => item.Salary)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DoctorEmail)
             </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.DoctorId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DoctorId">Details</a> |
+              
                 <a asp-action="Delete" asp-route-id="@item.DoctorId">Delete</a>
-            </td>
+            </td>}
         </tr>
 }
     </tbody>

@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<HealthcareProject.Models.MonthlyReport>
 
-@{
-    ViewData["Title"] = "View";
-}
 
 <h1>Monthly Report Summary</h1>
 
@@ -10,19 +7,18 @@
 <table class="table">
     <thead>
         <tr>
-            @{int count = 1;}
+            
             <th>
-                @count
+                @Html.DisplayNameFor(model => model.DoctorName)
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.ReportMonth)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NoPatients)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DoctorName)
-            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.MonthlyIncome)
             </th>
@@ -33,21 +29,24 @@
 
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DoctorName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NoPatients)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReportMonth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MonthlyIncome)
-                </td>
+        <tr>
 
-            </tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DoctorName)
+            </td>
+            <td>
+               @item.ReportMonth.Date.ToLongDateString();
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NoPatients)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.MonthlyIncome)
+            </td>
+
+
+        </tr>
         }
     </tbody>
 </table>

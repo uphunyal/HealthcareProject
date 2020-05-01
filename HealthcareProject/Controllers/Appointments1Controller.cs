@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize(Roles ="Patient, Staff")]
+   
     public class Appointments1Controller : Controller
     {
         private readonly healthcarev1Context _context;
@@ -19,18 +19,31 @@ namespace HealthcareProject.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Patient, Staff")]
         // GET: Appointments1
         public async Task<IActionResult> Index()
         {
            
-            var healthcarev1Context = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient);
             
-
-            return View(await healthcarev1Context.ToListAsync());
+                var healthcarev1Context = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient);
+                return View(await healthcarev1Context.ToListAsync());
            
+
+
+
+
         }
-        
+        /*[AllowAnonymous]
+        public async Task<IActionResult> SearchAppointments()
+        {
+
+            ViewBag["ApptId"] = new SelectList(_context.Appointment.Include(c => c.Doctor), "DoctorId", "DoctorName");
+
+
+            return View();
+
+        }*/
+        [Authorize(Roles = "Patient, Staff")]
         // GET: Appointments1/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -51,7 +64,7 @@ namespace HealthcareProject.Controllers
             return View(appointment);
         }
 
-
+        [Authorize(Roles = "Patient, Staff")]
 
         public IActionResult Create(int? doctor_id, DateTime? appt_date)
         {
@@ -100,6 +113,7 @@ namespace HealthcareProject.Controllers
 
             return View();
         }
+        [Authorize(Roles = "Patient, Staff")]
         // POST: Appointments1/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -146,12 +160,12 @@ namespace HealthcareProject.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
+            ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorName", appointment.DoctorId);
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
         }
-
-        /*// GET: Appointments1/Edit/5
+        [Authorize(Roles = "Staff")]
+        // GET: Appointments1/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -168,7 +182,7 @@ namespace HealthcareProject.Controllers
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
         }
-
+        [Authorize(Roles = "Staff")]
         // POST: Appointments1/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -185,7 +199,8 @@ namespace HealthcareProject.Controllers
             {
                 try
                 {
-                    if (appointment.VisitRecord == true) {
+                    if (appointment.VisitRecord == true)
+                    {
                         var addtovisit = new VisitRecord { DoctorId = appointment.DoctorId, PatientId = (int)appointment.PatientId, Prescription = "N/A", VisitDate = appointment.ApptDate, VisitReason = appointment.AppointmentReason, Visited = false, Visitid = Guid.NewGuid().ToString() };
                         _context.Add(addtovisit);
                         await _context.SaveChangesAsync();
@@ -209,7 +224,7 @@ namespace HealthcareProject.Controllers
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
-        }*/
+        }
 
         // GET: Appointments1/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -250,7 +265,18 @@ namespace HealthcareProject.Controllers
                                 select p.Misusedcount;
             int count = misusecount.FirstOrDefault();
 
+            //Add the user to misused user database
 
+            if (User.IsInRole("Patient"))
+            {
+                if (!UserExists(User.Identity.Name))
+                {
+
+                    var newuser = new MisusedUser { UserEmail = User.Identity.Name, Misusedcount = 0 };
+                    _context.MisusedUser.Add(newuser);
+                    await _context.SaveChangesAsync();
+                }
+            }
             //Update misuse count or deny permission to cancel appointment based on misuse count.
             if (User.IsInRole("Patient"))
             {

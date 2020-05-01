@@ -27,7 +27,7 @@
             {
                 <div class="form-group">
                     <label asp-for="PatientEmail" class="control-label">Email</label>
-                    <input asp-for="PatientEmail" class="form-control" required />
+                    <input asp-for="PatientEmail" value="@User.Identity.Name"class="form-control" required />
                     <span asp-validation-for="PatientEmail" class="text-danger"></span>
                 </div>
 

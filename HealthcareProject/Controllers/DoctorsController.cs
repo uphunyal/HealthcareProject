@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize(Roles ="CEO")]
+   
     public class DoctorsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -24,31 +24,31 @@ namespace HealthcareProject.Controllers
             _userManager = userManager;
             _signManager = signManager;
         }
-
+        [AllowAnonymous]
         // GET: Doctors
         public async Task<IActionResult> Index()
         {
             return View(await _context.Doctor.ToListAsync());
         }
+        /*
+                // GET: Doctors/Details/5
+                public async Task<IActionResult> Details(int? id)
+                {
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
 
-        // GET: Doctors/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+                    var doctor = await _context.Doctor
+                        .FirstOrDefaultAsync(m => m.DoctorId == id);
+                    if (doctor == null)
+                    {
+                        return NotFound();
+                    }
 
-            var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.DoctorId == id);
-            if (doctor == null)
-            {
-                return NotFound();
-            }
-
-            return View(doctor);
-        }
-
+                    return View(doctor);
+                }*/
+        [Authorize(Roles = "CEO")]
         // GET: Doctors/Create
         public IActionResult Create()
         {
@@ -59,6 +59,7 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "CEO")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DoctorName,Salary,DoctorEmail,DoctorId")] Doctor doctor)
         {
@@ -91,7 +92,7 @@ namespace HealthcareProject.Controllers
             }
             return View(doctor);
         }
-
+        [Authorize(Roles = "CEO")]
         // GET: Doctors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -142,7 +143,7 @@ namespace HealthcareProject.Controllers
             }
             return View(doctor);
         }
-
+        [Authorize(Roles = "CEO")]
         // GET: Doctors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -160,6 +161,7 @@ namespace HealthcareProject.Controllers
 
             return View(doctor);
         }
+        [Authorize(Roles = "CEO")]
 
         // POST: Doctors/Delete/5
         [HttpPost, ActionName("Delete")]

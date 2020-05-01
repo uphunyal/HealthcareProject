@@ -14,8 +14,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ApptId" />
             <div class="form-group">
-                <label asp-for="ApptDate" class="control-label"></label>
-                <input asp-for="ApptDate" class="form-control" />
+                
+                <input type="hidden" asp-for="ApptDate" class="form-control" />
                 <span asp-validation-for="ApptDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,12 +35,12 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="VisitRecord" /> @Html.DisplayNameFor(model => model.VisitRecord)
+                    <input class="form-check-input" asp-for="VisitRecord" />Add to Visit Record / Patient List
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="DoctorId" class="control-label"></label>
-                <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorId"></select>
+                <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorId" ></select>
                 <span asp-validation-for="DoctorId" class="text-danger"></span>
             </div>
             <div class="form-group">

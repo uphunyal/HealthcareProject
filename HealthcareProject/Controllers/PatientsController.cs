@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize(Roles ="Staff, Patient, CEO")]
+   
     public class PatientsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -19,8 +19,9 @@ namespace HealthcareProject.Controllers
         {
             _context = context;
         }
-       
+
         // GET: Patients
+        [Authorize(Roles = "Staff, Patient, CEO")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Patient.ToListAsync());
@@ -43,7 +44,7 @@ namespace HealthcareProject.Controllers
 
             return View(patient);
         }
-        [Authorize(Roles = "Staff, Doctor, Nurse")]
+        [Authorize(Roles = "Staff")]
         // GET: Patients/Create
         public IActionResult Create()
         {
@@ -54,7 +55,7 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Staff, Doctor, Nurse")]
+        [Authorize(Roles = "Staff")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PatientName,PatientEmail,PatientAddress,Phone,Ssn,Weight,Height,Insurance,Bloodpressure,Pulse,AppointmentMisused,PatientId,Allergy")] Patient patient)
         {
@@ -82,7 +83,7 @@ namespace HealthcareProject.Controllers
             }
             return View(patient);
         }
-        [Authorize(Roles = "Staff, Doctor, Nurse, Patient")]
+        [Authorize(Roles = "Staff,Doctor, Nurse, Patient")]
         // POST: Patients/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -113,7 +114,12 @@ namespace HealthcareProject.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if (User.IsInRole("Doctor") || User.IsInRole("Nurse")) {
+                return RedirectToAction("Index", "VisitRecords");
+                }
+                else
+                    return RedirectToAction(nameof(Index));
+
             }
             return View(patient);
         }

@@ -112,14 +112,14 @@ namespace HealthcareProject
             }
             var admin = new IdentityUser
             {
-                UserName = "admin@myhealthcare.com",
-                Email = "admin@myhealthcare.com",
+                UserName = "ceo@myhealthcare.com",
+                Email = "ceo@myhealthcare.com",
                 EmailConfirmed = true,
 
 
             };
 
-            var user = await UserManager.FindByEmailAsync("admin@myhealthcare.com");
+            var user = await UserManager.FindByEmailAsync("ceo@myhealthcare.com");
             if (user == null)
             {
                 var createpoweruser = await UserManager.CreateAsync(admin, "Superuser1!");
@@ -165,14 +165,14 @@ namespace HealthcareProject
             }
             var doctor = new IdentityUser
             {
-                UserName = "doctor@myhealthcare.com",
-                Email = "doctor@myhealthcare.com",
+                UserName = "mydoctor@myhealthcare.com",
+                Email = "mydoctor@myhealthcare.com",
                 EmailConfirmed = true,
 
 
             };
 
-            var doctoruser = await UserManager.FindByEmailAsync("doctor@myhealthcare.com");
+            var doctoruser = await UserManager.FindByEmailAsync("mydoctor@myhealthcare.com");
             if (doctoruser == null)
             {
                 var createpoweruser = await UserManager.CreateAsync(doctor, "Superuser1!");
@@ -263,6 +263,12 @@ namespace HealthcareProject
             app.UseHangfireDashboard();
             var options = new BackgroundJobServerOptions { WorkerCount = 1 };
             app.UseHangfireServer(options);
+            //Clear Appointment at 8 Pm
+            recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(14, 00));
+            //Generate report at 9 PM
+            int days = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+            recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(15, 00));
+            recurringJobManager.AddOrUpdate<JobScheduling>("Generate Monthly report", x => x.GenerateMonthlyReport(), Cron.Monthly(days, 15));
         }
 
         /* backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());

@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.VisitReason)
+                Visit Reason/ Treatment Plan
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Prescription)
@@ -61,7 +61,7 @@
             @if (User.IsInRole("Doctor") || User.IsInRole("Nurse")) { 
                 <td><a asp-controller="Patients" asp-action="Edit" asp-route-id="@item.Patient.PatientId">Edit</a></td>}
             <td>
-                @if (User.IsInRole("Doctor") || User.IsInRole("Nurse"))
+                @if (User.IsInRole("Doctor"))
                 {
                     @Html.ActionLink("Edit", "Edit", new { id = item.Visitid, pid = item.PatientId }) }
                 @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

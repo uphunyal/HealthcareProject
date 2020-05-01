@@ -107,7 +107,7 @@ namespace HealthcareProject
 
         public void GenerateMonthlyReport()
         {
-            var rand = new Random();
+            /*var rand = new Random();
             int Month = DateTime.Today.Month;
 
 
@@ -154,7 +154,31 @@ namespace HealthcareProject
 
             }
 
+            
+
+*/
+                  //Find unique doctor names!
+          /*  var get_distinct_doctors_list = _context.DailyReport.Include(c => c.DoctorName).Distinct().ToList();
+
+            foreach( var x in get_distinct_doctors_list)
+            {
+                string doctorname = x.DoctorName;*/
+               //Get total patients and total income for each doctor
+                    var result = _context.DailyReport.Where(c=>c.ReportDate.Month==DateTime.Today.Month).GroupBy(o => o.DoctorName)
+                   .Select(g => new { doctorname = g.Key, total = g.Sum(i => i.DailyIncome), total_patient= g.Sum(i=>i.NoPatients)});
+
+                foreach( var x in result)
+                {
+                var newrecord = new MonthlyReport { DoctorName = x.doctorname, NoPatients = x.total_patient, MonthlyIncome = x.total, ReportId = Guid.NewGuid().ToString(), ReportMonth = DateTime.Now };
+                _context.Add(newrecord);
+                
+               
+                }
+            _context.SaveChanges();
+
+
+            //
+        }
 
         }
     }
-}
