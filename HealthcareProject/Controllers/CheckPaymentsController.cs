@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using HealthcareProject.Services;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
+ 
     public class CheckPaymentsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -21,36 +23,38 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: CheckPayments
+        [Authorize(Roles = "Staff, CEO")]
         public async Task<IActionResult> Index()
         {
             var healthcarev1Context = _context.CheckPayment.Include(c => c.Billing);
             return View(await healthcarev1Context.ToListAsync());
         }
 
-        // GET: CheckPayments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        /* // GET: CheckPayments/Details/5
+         public async Task<IActionResult> Details(int? id)
+         {
+             if (id == null)
+             {
+                 return NotFound();
+             }
 
-            var checkPayment = await _context.CheckPayment
-                .Include(c => c.Billing)
-                .FirstOrDefaultAsync(m => m.CheckNo == id);
-            if (checkPayment == null)
-            {
-                return NotFound();
-            }
+             var checkPayment = await _context.CheckPayment
+                 .Include(c => c.Billing)
+                 .FirstOrDefaultAsync(m => m.CheckNo == id);
+             if (checkPayment == null)
+             {
+                 return NotFound();
+             }
 
-            return View(checkPayment);
-        }
+             return View(checkPayment);
+         }*/
 
+        [Authorize(Roles = "Staff")]
         // GET: CheckPayments/Create
-        public IActionResult Create(int id)
+        public IActionResult Create(int billing_id)
         {
-            ViewData["PaymentAmount"] = new SelectList(_context.Billing.Where(c=>c.BillingId==id), "BillingId", "BillingAmount");
-            ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", id);
+            ViewData["PaymentAmount"] = new SelectList(_context.Billing.Where(c=>c.BillingId==billing_id), "BillingId", "BillingAmount");
+            ViewData["BillingId"] = new SelectList(_context.Billing.Where(c=>c.BillingId==billing_id), "BillingId", "BillingId");
 
             return View();
         }
@@ -59,11 +63,15 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Staff")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CheckNo,PaymentAmount,PaymentDate,BillingId,ReceiveReceipt")] CheckPayment checkPayment)
         {
             if (ModelState.IsValid)
+
             {
+                Console.WriteLine("Check Payment" + checkPayment.BillingId + checkPayment.PaymentAmount
+                  );
                 _context.Add(checkPayment);
                 await _context.SaveChangesAsync();
                 
@@ -128,7 +136,7 @@ namespace HealthcareProject.Controllers
             return View("CheckPaymentSuccessful");
         }
 
-        // GET: CheckPayments/Edit/5
+        /*// GET: CheckPayments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -214,6 +222,6 @@ namespace HealthcareProject.Controllers
         private bool CheckPaymentExists(int id)
         {
             return _context.CheckPayment.Any(e => e.CheckNo == id);
-        }
+        }*/
     }
 }

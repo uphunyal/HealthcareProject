@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Doctor, Nurse, Patient")]
     public class VisitRecordsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -20,59 +20,96 @@ namespace HealthcareProject.Controllers
             _context = context;
         }
 
+        
         // GET: VisitRecords
         public async Task<IActionResult> Index()
         {
-            var healthcarev1Context = _context.VisitRecord.Include(v => v.Doctor).Include(v => v.Patient);
-            return View(await healthcarev1Context.ToListAsync());
-        }
-/*
-        // GET: VisitRecords/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+            if (User.IsInRole("Nurse")){
+                var find_doctor_id = _context.Nurse.Where(c => c.NurseEmail == User.Identity.Name).FirstOrDefault().DoctorId;
+                var healthcarev1Context = _context.VisitRecord.Include(v => v.Doctor).Where(v=>v.DoctorId==find_doctor_id && v.VisitDate.Date==DateTime.Today.Date).Include(v => v.Patient);
+                if (healthcarev1Context.Count() != 0) {
+                return View(await healthcarev1Context.ToListAsync());
+                }
+                else
+                {
+                    return View("NoDataFound");
+                }
             }
-
-            var visitRecord = await _context.VisitRecord
-                .Include(v => v.Doctor)
-                .Include(v => v.Patient)
-                .FirstOrDefaultAsync(m => m.Visitid == id);
-            if (visitRecord == null)
-            {
-                return NotFound();
+            else if(User.IsInRole("Doctor")) {
+               
+                var healthcarev1Context = _context.VisitRecord.Include(v => v.Doctor).Where(v=>v.Doctor.DoctorEmail==User.Identity.Name && v.VisitDate.Date==DateTime.Today.Date).Include(v => v.Patient);
+                if (healthcarev1Context.Count() != 0)
+                {
+                    return View(await healthcarev1Context.ToListAsync());
+                }
+                else
+                {
+                    return View("NoDataFound");
+                }
             }
-
-            return View(visitRecord);
-        }
-
-        // GET: VisitRecords/Create
-        public IActionResult Create()
-        {
-            ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail");
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
-            return View();
-        }
-
-        // POST: VisitRecords/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VisitReason,Prescription,Visitid,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
-        {
-            if (ModelState.IsValid)
+            else
             {
-                _context.Add(visitRecord);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", visitRecord.DoctorId);
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", visitRecord.PatientId);
-            return View(visitRecord);
-        }*/
 
+                var healthcarev1Context = _context.VisitRecord.Include(v => v.Doctor).Include(c => c.Patient).Where(c => c.Patient.PatientEmail == User.Identity.Name);
+                if (healthcarev1Context.Count() != 0)
+                {
+                    return View(await healthcarev1Context.ToListAsync());
+                }
+                else
+                {
+                    return View("NoDataFound");
+                }
+            }
+           
+             
+        }
+        /*
+                // GET: VisitRecords/Details/5
+                public async Task<IActionResult> Details(string id)
+                {
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var visitRecord = await _context.VisitRecord
+                        .Include(v => v.Doctor)
+                        .Include(v => v.Patient)
+                        .FirstOrDefaultAsync(m => m.Visitid == id);
+                    if (visitRecord == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(visitRecord);
+                }
+
+                // GET: VisitRecords/Create
+                public IActionResult Create()
+                {
+                    ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail");
+                    ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
+                    return View();
+                }
+
+                // POST: VisitRecords/Create
+                // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+                // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+                [HttpPost]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> Create([Bind("VisitReason,Prescription,Visitid,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
+                {
+                    if (ModelState.IsValid)
+                    {
+                        _context.Add(visitRecord);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", visitRecord.DoctorId);
+                    ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", visitRecord.PatientId);
+                    return View(visitRecord);
+                }*/
+        [Authorize(Roles = "Doctor, Nurse")]
         // GET: VisitRecords/Edit/5
         public async Task<IActionResult> Edit(string id, int pid)
         {
@@ -95,6 +132,7 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Doctor, Nurse")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("VisitReason,Prescription,Visitid,VisitDate,Visited,PatientId,DoctorId")] VisitRecord visitRecord)
         {

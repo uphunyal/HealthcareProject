@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Staff, Patient, CEO")]
     public class PatientsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -19,7 +19,7 @@ namespace HealthcareProject.Controllers
         {
             _context = context;
         }
-
+       
         // GET: Patients
         public async Task<IActionResult> Index()
         {
@@ -43,7 +43,7 @@ namespace HealthcareProject.Controllers
 
             return View(patient);
         }
-
+        [Authorize(Roles = "Staff, Doctor, Nurse")]
         // GET: Patients/Create
         public IActionResult Create()
         {
@@ -54,6 +54,7 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Staff, Doctor, Nurse")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PatientName,PatientEmail,PatientAddress,Phone,Ssn,Weight,Height,Insurance,Bloodpressure,Pulse,AppointmentMisused,PatientId,Allergy")] Patient patient)
         {
@@ -65,7 +66,7 @@ namespace HealthcareProject.Controllers
             }
             return View(patient);
         }
-
+        [Authorize(Roles = "Staff, Doctor, Nurse, Patient")]
         // GET: Patients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -81,7 +82,7 @@ namespace HealthcareProject.Controllers
             }
             return View(patient);
         }
-
+        [Authorize(Roles = "Staff, Doctor, Nurse, Patient")]
         // POST: Patients/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -116,54 +117,9 @@ namespace HealthcareProject.Controllers
             }
             return View(patient);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditMedical(int id, [Bind("PatientName,PatientEmail,PatientAddress,Phone,Ssn,Weight,Height,Insurance,Bloodpressure,Pulse,AppointmentMisused,PatientId,Allergy")] Patient patient)
-        {
-            if (id != patient.PatientId)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(patient);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PatientExists(patient.PatientId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index", "VisitRecords");
-            }
-            return RedirectToAction("Index", "VisitRecords");
-        }
-        // GET: Patients/Edit/5
-        public async Task<IActionResult> EditMedical(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var patient = await _context.Patient.FindAsync(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-            return View("EditMedical");
-        }
-
-        // GET: Patients/Delete/5
+        /*// GET: Patients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -190,7 +146,7 @@ namespace HealthcareProject.Controllers
             _context.Patient.Remove(patient);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool PatientExists(int id)
         {

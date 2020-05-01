@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Rotativa.AspNetCore;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "CEO")]
     public class DailyReportsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -19,32 +21,48 @@ namespace HealthcareProject.Controllers
         {
             _context = context;
         }
-
-        // GET: DailyReports
-        public async Task<IActionResult> Index()
+        //For Report Generation
+        public class Report
         {
-            return View(await _context.DailyReport.ToListAsync());
+            public DateTime ReportDate;
+
+            public string DoctorEmail;
+
+        } // GET: DailyReports/Create
+        public IActionResult Create()
+        {
+
+            IEnumerable<SelectListItem> Doctors = _context.Doctor.Select(doc => new SelectListItem
+            {
+                Value = doc.DoctorEmail,
+                Text = doc.DoctorEmail
+            });
+            ViewBag.DoctorEmail = Doctors;
+
+            return View();
         }
 
-        // GET: DailyReports/Details/5
-        public async Task<IActionResult> Details(string id)
+        // POST: DailyReports/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(IFormCollection collection)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var dailyReport = await _context.DailyReport
-                .FirstOrDefaultAsync(m => m.ReportId == id);
-            if (dailyReport == null)
-            {
-                return NotFound();
-            }
+            var Date = DateTime.Parse(collection.ToArray()[0].Value).ToShortDateString();
 
-            return View(dailyReport);
+            if (ModelState.IsValid)
+            {
+
+                var reportContext = _context.DailyReport.AsEnumerable().Where(rec => rec.ReportDate.ToShortDateString() == Date).ToList();
+
+                return new ViewAsPdf("View",  reportContext);
+            }
+            return NotFound();
         }
 
-        // GET: DailyReports/Create
+        /*// GET: DailyReports/Create
         public IActionResult Create()
         {
             return View();
@@ -149,6 +167,6 @@ namespace HealthcareProject.Controllers
         private bool DailyReportExists(string id)
         {
             return _context.DailyReport.Any(e => e.ReportId == id);
-        }
+        }*/
     }
 }

@@ -4,7 +4,6 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
 
 <h4>CashPayment</h4>
 <hr />
@@ -14,16 +13,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PaymentDate" class="control-label"></label>
-                <input asp-for="PaymentDate" class="form-control" />
+                <input asp-for="PaymentDate" class="form-control"  />
                 <span asp-validation-for="PaymentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PaymentAmount" class="control-label"></label>
-                <select asp-for="PaymentAmount"  class="form-control" asp-items="ViewBag.PaymentAmount"></select>
+                <select asp-for="PaymentAmount" class="form-control" asp-items="ViewBag.PaymentAmount" disabled></select>
+                
             </div>
             <div class="form-group">
                 <label asp-for="BillingId" class="control-label"></label>
-                <select asp-for="BillingId"asp-validation-for="BillingId" class ="form-control" asp-items="ViewBag.BillingId"></select>
+                <select asp-for="BillingId"asp-validation-for="BillingId" class ="form-control" asp-items="ViewBag.BillingId" ></select>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">

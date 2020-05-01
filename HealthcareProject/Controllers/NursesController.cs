@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "CEO")]
     public class NursesController : Controller
     {
         private readonly healthcarev1Context _context;

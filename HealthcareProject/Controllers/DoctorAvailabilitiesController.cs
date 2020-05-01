@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize(Roles = "Staff")]
     public class DoctorAvailabilitiesController : Controller
     {
         private readonly healthcarev1Context _context;

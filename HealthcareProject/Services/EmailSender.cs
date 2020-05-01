@@ -30,8 +30,8 @@ namespace HealthcareProject.Services
             {
                 From = new EmailAddress("phunyalutsav@gmail.com", Options.SendGridUser),
                 Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
+                PlainTextContent = message ,
+                HtmlContent = message 
             };
             msg.AddTo(new EmailAddress(email));
 

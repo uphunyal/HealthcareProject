@@ -1,52 +1,34 @@
-﻿@model HealthcareProject.Models.DailyReport
+﻿@model HealthcareProject.Controllers.DailyReportsController.Report
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Get Report";
 }
 
-<h1>Create</h1>
 
-<h4>DailyReport</h4>
+
+<h4>Report</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <p> Select Date</p>
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ReportDate" class="control-label"></label>
-                <input asp-for="ReportDate" class="form-control" />
-                <span asp-validation-for="ReportDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NoPatients" class="control-label"></label>
-                <input asp-for="NoPatients" class="form-control" />
-                <span asp-validation-for="NoPatients" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReportId" class="control-label"></label>
-                <input asp-for="ReportId" class="form-control" />
-                <span asp-validation-for="ReportId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DoctorName" class="control-label"></label>
-                <input asp-for="DoctorName" class="form-control" />
-                <span asp-validation-for="DoctorName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DailyIncome" class="control-label"></label>
-                <input asp-for="DailyIncome" class="form-control" />
-                <span asp-validation-for="DailyIncome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+                <div class="form-group">
+                    <label asp-for="ReportDate" class="control-label"></label>
+                    <input asp-for="ReportDate" class="form-control" />
+                    <span asp-validation-for="ReportDate" class="text-danger"></span>
+                </div>
+
+
+                <input type="submit" value="Get Daily Report" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

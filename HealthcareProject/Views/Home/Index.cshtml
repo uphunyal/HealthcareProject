@@ -1,8 +1,111 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" href="~/css//StyleSheet.css" />
+<head>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+</head>
+@if (!User.Identity.IsAuthenticated)
+{
+    <body background="/healthcare.jpeg" background-repeat: no-repeat background-size: cover>
+        <div class="text-center">
+            <h1 class="display-4">Welcome to Healthcare Service!</h1>
+
+            <p><a href="https://www.qfxsoftware.com/download.htm">KeyScrambler! Please install to make your usage secure.</a></p>
+
+        </div>
+    </body>
+}
+@if (User.Identity.IsAuthenticated && User.IsInRole("CEO"))
+{
+    <body background="/healthcare.jpeg" background-repeat: no-repeat background-size: cover>
+        <div class="sidenav">
+            <a asp-controller="DailyReports" asp-action="Create">Daily Reports</a>
+            <a asp-controller="MonthlyReports" , asp-action="Create">Monthly Reports</a>
+            <a asp-controller="Doctors" asp-action="Index">Change Doctor Salary</a>
+            <a asp-controller="Nurses" asp-action="Index">Change Nurse Salary</a>
+            <a asp-controller="Patients" asp-action="Index">Patients</a>
+            <a asp-controller="CardPayments" asp-action="Index">Card Payments</a>
+            <a asp-controller="CashPayments" asp-action="Index">Cash Payments</a>
+            <a asp-controller="CheckPayments" asp-action="Index">Check Payments</a>
+            <a asp-controller="Billings" asp-action="Index">Invoices</a>
+        </div>
+    </body>
+
+}
+
+@*
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Doctor"))
+    {
+        <body>
+            <div class="sidenav">
+                <a asp-controller="VisitRecords" asp-action="Index">Visit Records</a>
+                <a asp-controller="Appointments1" asp-action="Index">My Appointments</a>
+            </div>
+        </body>
+    }
+*@
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Nurse"))
+{
+    <body background="/healthcare.jpeg" background-repeat: no-repeat background-size: cover>
+        <div class="sidenav">
+            <a asp-controller="VisitRecords" asp-action="Index">My Appointments</a>
+
+
+        </div>
+    </body>
+}
+
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Patient"))
+{
+    <body background="/healthcare.jpeg" background-repeat: no-repeat background-size: cover>
+        <div class="sidenav">
+            <a asp-controller="Appointments1" asp-action="Index">Appointment</a>
+            <a asp-controller="Billings" asp-action="Index">Invoice/Payment</a>
+            <a asp-controller="MedicalReports" asp-action="Index">Medical Reports</a>
+            <a asp-controller="Patients" asp-action="Index">Personal and Medical Info</a>
+            <a asp-controller="VisitRecords" asp-action="Index">Hospital Visit Records</a>
+
+        </div>
+    </body>
+}
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Staff"))
+{
+
+    <body background="/healthcare.jpeg" background-repeat: no-repeat background-size: cover>
+        <div class="sidenav">
+            <a asp-controller="Appointments1" asp-action="Index">Appointments</a>
+            <a asp-controller="Billings" asp-action="Index">Invoices</a>
+            <a asp-controller="DoctorUnavailabilities" asp-action="Index">Add Doctor Unavailibility</a>
+            <a asp-controller="Doctors" asp-action="Index">Add Doctor Availibility</a>
+            <a asp-controller="Patients" asp-action="Index">Patients</a>
+            <a asp-controller="MedicalReports" asp-action="Index">Add Medical Reports</a>
+        </div>
+    </body>
+
+}
+@if (User.Identity.IsAuthenticated && User.IsInRole("Doctor"))
+{
+    <body background="/healthcare.jpeg" background-repeat: no-repeat background-size: cover>
+
+        <div class="sidenav">
+            <div class="grid-item"> <a asp-area="" asp-controller="VisitRecords" asp-action="Index">My Appointments</a></div>
+
+
+        </div>
+
+
+    </body>
+}
+
+
+
+
+
+
+
+

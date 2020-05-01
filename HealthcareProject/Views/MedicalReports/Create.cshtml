@@ -18,12 +18,12 @@
                 <span asp-validation-for="MedicalreportName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReportFile" class="control-label"></label>
+                <label asp-for="ReportFile" class="control-label"> Report Details</label>
                 <input asp-for="ReportFile" class="form-control" />
                 <span asp-validation-for="ReportFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MedicalreportId" class="control-label"></label>
+                <label asp-for="MedicalreportId" class="control-label"> Report Type</label>
                 <select asp-for="MedicalreportId" class ="form-control" asp-items="ViewBag.MedicalreportId"></select>
             </div>
             <div class="form-group">

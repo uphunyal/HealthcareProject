@@ -6,11 +6,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
+@if (User.IsInRole("Staff")) { 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Invoice</a>
 </p>
+}
 
 <form asp-controller="Billings" asp-action="Index" method="get">
    <p>Please use your billing id to find the invoice to proceed for payment!</p>
@@ -22,6 +23,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Billing ID</th>
             <th>
                 @Html.DisplayNameFor(model => model.BillingDate)
             </th>
@@ -29,7 +31,7 @@
                 @Html.DisplayNameFor(model => model.BillingAmount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Paid)
+                Paid Status
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Patient)
@@ -40,28 +42,53 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @item.BillingDate.Date.ToShortDateString()
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BillingAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Paid)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Patient.PatientName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.BillingId">Edit</a> |
+        <tr>
 
-                    <a asp-action="Create" asp-controller="CashPayments" asp-route-id="@item.BillingId">Cash Payment</a> |
-                    <a asp-action="Create" asp-controller="CheckPayments" asp-route-id="@item.BillingId">Check Payment</a> |
-                </td>
+            <td>
+              @item.BillingId
+            </td>
+
+            <td>
+                @item.BillingDate.Date.ToShortDateString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BillingAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Paid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patient.PatientName)
+            </td>
+            <td>
+
+                <a asp-action="Details" asp-route-id="@item.BillingId">Download Invoice</a>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Staff"))
+                {
+                    @if (item.Paid == false)
+                    {
+                        <form asp-controller="CheckPayments" asp-action="Create" method="get">
+
+                            <p>
+                                <input hidden type="text" name="billing_id" value="@item.BillingId">
+                                <input type="submit" value="Check Payment" />
+                            </p>
+                        </form>
+                        <form asp-controller="CashPayments" asp-action="Create" method="get">
+
+                            <p>
+                                <input hidden type="text" name="billing_id" value="@item.BillingId">
+                                <input type="submit" value="Cash Payment" />
+                            </p>
+                        </form>
+                       
+                    }
+                }
+            </td>
+            @if (item.Paid != true)
+            {
                 <td>
                     <div class="text-center">
-
 
                         <form asp-action="Charge" asp-controller="Billings" asp-route-id="@item.BillingId" method="POST">
                             <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -74,7 +101,8 @@
                     </div>
 
                 </td>
-            </tr>
+            }
+        </tr>
         }
     </tbody>
 </table>

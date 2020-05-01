@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "NoDataFound";
+}
+
+<h1>NoDataFound</h1>
+@if (User.IsInRole("Doctor") || User.IsInRole("Nurse"))
+{
+    <p>You do not have any appointments to attend today so far.</p>}
+else
+{ <p>We do not have any visit records of you!</p>}
+

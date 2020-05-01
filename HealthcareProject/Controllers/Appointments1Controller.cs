@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize(Roles ="Patient, Staff")]
     public class Appointments1Controller : Controller
     {
         private readonly healthcarev1Context _context;
@@ -21,10 +23,12 @@ namespace HealthcareProject.Controllers
         // GET: Appointments1
         public async Task<IActionResult> Index()
         {
+           
             var healthcarev1Context = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient);
             
 
             return View(await healthcarev1Context.ToListAsync());
+           
         }
         
         // GET: Appointments1/Details/5
@@ -105,14 +109,21 @@ namespace HealthcareProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                var findbyemail = _context.Appointment.Where(c => c.PatientEmail == User.Identity.Name).Count();
 
+                //If the email is found, reject creating the appointment and redirect to the page that says unsuccessful
+
+                if (findbyemail != 0)
+                {
+                    return View("AppointmentExists");
+                }
                 //Add the user to misused user database
                 
                 if (User.IsInRole("Patient"))
                 {
                     if (!UserExists(User.Identity.Name))
                     {
-                        Console.WriteLine("My email is" + User.Identity.Name);
+                        
                         var newuser = new MisusedUser { UserEmail = User.Identity.Name, Misusedcount = 0 };
                         _context.MisusedUser.Add(newuser);
                         await _context.SaveChangesAsync();
@@ -140,7 +151,7 @@ namespace HealthcareProject.Controllers
             return View(appointment);
         }
 
-        // GET: Appointments1/Edit/5
+        /*// GET: Appointments1/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -198,7 +209,7 @@ namespace HealthcareProject.Controllers
             ViewData["DoctorId"] = new SelectList(_context.Doctor, "DoctorId", "DoctorEmail", appointment.DoctorId);
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", appointment.PatientId);
             return View(appointment);
-        }
+        }*/
 
         // GET: Appointments1/Delete/5
         public async Task<IActionResult> Delete(int? id)

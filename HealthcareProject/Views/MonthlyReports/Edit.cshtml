@@ -12,7 +12,12 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ReportMonth" />
+            <input type="hidden" asp-for="ReportId" />
+            <div class="form-group">
+                <label asp-for="ReportMonth" class="control-label"></label>
+                <input asp-for="ReportMonth" class="form-control" />
+                <span asp-validation-for="ReportMonth" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="NoPatients" class="control-label"></label>
                 <input asp-for="NoPatients" class="form-control" />
@@ -39,6 +44,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

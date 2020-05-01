@@ -19,15 +19,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="PaymentAmount" class="control-label"></label>
-                <select asp-for="PaymentAmount" class="form-control" asp-items="ViewBag.PaymentAmount"></select>
+                <input asp-for="PaymentAmount" class="form-control" />
+                <span asp-validation-for="PaymentAmount" class="text-danger"></span>
+               <select asp-for="PaymentAmount" class="form-control" asp-items="ViewBag.PaymentAmount"></select>
             </div>
             <div class="form-group">
                 <label asp-for="PaymentDate" class="control-label"></label>
-                <input asp-for="PaymentDate" class="form-control" />
+                <input asp-for="PaymentDate" class="form-control" value="@DateTime.Now"/>
                 <span asp-validation-for="PaymentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BillingId" class="control-label"></label>
+               @* <input asp-for="BillingId" class="form-control" />
+                <span asp-validation-for="BillingId" class="text-danger"></span>*@
                 <select asp-for="BillingId" class="form-control" asp-items="ViewBag.BillingId"></select>
             </div>
             <div class="form-group form-check">
@@ -43,6 +47,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to Invoice List</a>
 </div>
 

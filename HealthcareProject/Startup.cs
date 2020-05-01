@@ -72,7 +72,7 @@ namespace HealthcareProject
             services.AddDbContext<healthcarev1Context>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DataConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                  .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
@@ -82,6 +82,8 @@ namespace HealthcareProject
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+       o.TokenLifespan = TimeSpan.FromMinutes(5));
             // https://github.com/aspnet/Hosting/issues/793
             // the IHttpContextAccessor service is not registered by default.
             // the clientId/clientIp resolvers use it.
@@ -176,7 +178,7 @@ namespace HealthcareProject
                 var createpoweruser = await UserManager.CreateAsync(doctor, "Superuser1!");
                 if (createpoweruser.Succeeded)
                 {
-                    await UserManager.AddToRoleAsync(admin, "Doctor");
+                    await UserManager.AddToRoleAsync(doctor, "Doctor");
                 }
 
             }
@@ -254,14 +256,22 @@ namespace HealthcareProject
                 endpoints.MapRazorPages();
             });
             RotativaConfiguration.Setup(env.ContentRootPath, "wwwroot/Rotativa");
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAuthorizationFilter() }
+            });
             app.UseHangfireDashboard();
+            var options = new BackgroundJobServerOptions { WorkerCount = 1 };
+            app.UseHangfireServer(options);
+        }
 
-            /* backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
-             backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());*/
-             //Clear Appointment at 8 Pm
-            recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(15, 00));
-            /* recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(14, 00));
+        /* backgroundJobClient.Enqueue<JobScheduling>(x => x.ClearAppointment());
+         backgroundJobClient.Enqueue<JobScheduling>(x => x.GenerateDailyReport());*//*
+        //Clear Appointment at 8 Pm
+        recurringJobManager.AddOrUpdate<JobScheduling>("Clear Appointment", x => x.ClearAppointment(), Cron.Daily(14, 00));
+            //Generate report at 9 PM
+            recurringJobManager.AddOrUpdate<JobScheduling>("Generate daily report", x => x.GenerateDailyReport(), Cron.Daily(15, 00));
  */
         }
     }
-}
+

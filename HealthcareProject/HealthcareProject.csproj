@@ -17,6 +17,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Appointments1\Edit.cshtml" />
+    <Content Remove="Views\Billings\Delete.cshtml" />
+    <Content Remove="Views\Billings\Edit.cshtml" />
+    <Content Remove="Views\CardPayments\Create.cshtml" />
+    <Content Remove="Views\CardPayments\Delete.cshtml" />
+    <Content Remove="Views\CardPayments\Details.cshtml" />
+    <Content Remove="Views\CardPayments\Edit.cshtml" />
+    <Content Remove="Views\CashPayments\Delete.cshtml" />
+    <Content Remove="Views\CashPayments\Details.cshtml" />
+    <Content Remove="Views\CashPayments\Edit.cshtml" />
+    <Content Remove="Views\CheckPayments\Delete.cshtml" />
+    <Content Remove="Views\CheckPayments\Details.cshtml" />
+    <Content Remove="Views\CheckPayments\Edit.cshtml" />
+    <Content Remove="Views\DailyReports\Delete.cshtml" />
+    <Content Remove="Views\DailyReports\Details.cshtml" />
+    <Content Remove="Views\DailyReports\Edit.cshtml" />
+    <Content Remove="Views\DailyReports\Index.cshtml" />
+    <Content Remove="Views\MedicalReports\Delete.cshtml" />
+    <Content Remove="Views\MedicalReports\Details.cshtml" />
+    <Content Remove="Views\MonthlyReports\Delete.cshtml" />
+    <Content Remove="Views\MonthlyReports\Details.cshtml" />
+    <Content Remove="Views\MonthlyReports\Edit.cshtml" />
+    <Content Remove="Views\MonthlyReports\Index.cshtml" />
+    <Content Remove="Views\Patients\Delete.cshtml" />
     <Content Remove="Views\VisitRecords\Create.cshtml" />
     <Content Remove="Views\VisitRecords\Delete.cshtml" />
     <Content Remove="Views\VisitRecords\Details.cshtml" />
@@ -27,6 +51,7 @@
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
     <PackageReference Include="Hangfire.Core" Version="1.7.11" />
+    <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="1.1.0" />
     <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />

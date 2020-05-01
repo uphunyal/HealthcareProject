@@ -32,7 +32,8 @@ namespace HealthcareProject.Models
         public virtual DbSet<Patient> Patient { get; set; }
         public virtual DbSet<VisitRecord> VisitRecord { get; set; }
 
-              protected override void OnModelCreating(ModelBuilder modelBuilder)
+     
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Appointment>(entity =>
             {
@@ -342,14 +343,15 @@ namespace HealthcareProject.Models
 
             modelBuilder.Entity<MonthlyReport>(entity =>
             {
-                entity.HasKey(e => e.ReportMonth)
-                    .HasName("PK__monthly___A34902B648820416");
+                entity.HasKey(e => e.ReportId)
+                    .HasName("PK__monthly___779B7C583F7DA7C6");
 
                 entity.ToTable("monthly_report");
 
-                entity.Property(e => e.ReportMonth)
-                    .HasColumnName("report_month")
-                    .HasColumnType("date");
+                entity.Property(e => e.ReportId)
+                    .HasColumnName("report_id")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.DoctorName)
                     .IsRequired()
@@ -360,6 +362,10 @@ namespace HealthcareProject.Models
                 entity.Property(e => e.MonthlyIncome).HasColumnName("monthly_income");
 
                 entity.Property(e => e.NoPatients).HasColumnName("no_patients");
+
+                entity.Property(e => e.ReportMonth)
+                    .HasColumnName("report_month")
+                    .HasColumnType("date");
             });
 
             modelBuilder.Entity<Nurse>(entity =>
@@ -478,7 +484,7 @@ namespace HealthcareProject.Models
 
                 entity.Property(e => e.VisitDate)
                     .HasColumnName("visit_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.VisitReason)
                     .IsRequired()

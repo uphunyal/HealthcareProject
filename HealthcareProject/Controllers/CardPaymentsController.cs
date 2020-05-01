@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Staff,CEO")]
     public class CardPaymentsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -20,13 +20,14 @@ namespace HealthcareProject.Controllers
             _context = context;
         }
 
+       
         // GET: CardPayments
         public async Task<IActionResult> Index()
         {
             var healthcarev1Context = _context.CardPayment.Include(c => c.Billing);
             return View(await healthcarev1Context.ToListAsync());
         }
-
+/*
         // GET: CardPayments/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -156,6 +157,6 @@ namespace HealthcareProject.Controllers
         private bool CardPaymentExists(string id)
         {
             return _context.CardPayment.Any(e => e.ReferenceNo == id);
-        }
+        }*/
     }
 }

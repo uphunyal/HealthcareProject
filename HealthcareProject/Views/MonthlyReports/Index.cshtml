@@ -1,17 +1,29 @@
 ﻿@model IEnumerable<HealthcareProject.Models.MonthlyReport>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Monthly Reports";
 }
 
-<h1>Index</h1>
+<h1>Monthly Reports</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form asp-controller="MonthlyReports" asp-action="Index" method="get">
+    <p>Please enter last day of the month fo the monthly report!</p>
+    <p>
+        <input type="date" name="SearchDate">
+        <input type="submit" value="Find Monthly Report" />
+    </p>
+</form>
+
+@if (Model.Count() == 0)
+{
+    <p> We cannot find any report for the selected date!</p>
+}
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ReportMonth)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.NoPatients)
             </th>
@@ -28,6 +40,9 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.ReportMonth)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.NoPatients)
             </td>
             <td>
@@ -36,11 +51,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.MonthlyIncome)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ReportMonth">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ReportMonth">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ReportMonth">Delete</a>
-            </td>
+          
         </tr>
 }
     </tbody>

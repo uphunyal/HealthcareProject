@@ -4,11 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Cash Payment History</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -18,9 +16,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.PaymentAmount)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceiveReceipt)
-            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Billing)
             </th>
@@ -28,26 +24,21 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceiveReceipt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Billing.BillingId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PaymentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PaymentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PaymentId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentAmount)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Billing.BillingId)
+                </td>
+
+            </tr>
+        }
     </tbody>
 </table>

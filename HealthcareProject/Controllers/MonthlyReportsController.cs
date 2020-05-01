@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Rotativa.AspNetCore;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "CEO")]
     public class MonthlyReportsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -19,15 +21,45 @@ namespace HealthcareProject.Controllers
         {
             _context = context;
         }
-
-        // GET: MonthlyReports
-        public async Task<IActionResult> Index()
+        
+       /* // GET: MonthlyReports
+        public async Task<IActionResult> Index(DateTime search_date)
         {
+            if (!String.IsNullOrEmpty(search_date.ToShortDateString()))
+            {
+                var searchContext = _context.MonthlyReport.Where(c => c.ReportMonth.Date==search_date);
+                return View(await searchContext.ToListAsync());
+            }
             return View(await _context.MonthlyReport.ToListAsync());
+        }*/
+
+
+        // GET: MonthlyReports/Create
+        public IActionResult Create()
+        {
+            return View();
         }
 
-        // GET: MonthlyReports/Details/5
-        public async Task<IActionResult> Details(DateTime? id)
+        // POST: MonthlyReports/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(IFormCollection collection)
+        {
+            var Date = (DateTime.Parse(collection.ToArray()[0].Value).ToShortDateString().Split("/"))[0];
+
+            if (ModelState.IsValid)
+            {
+                var monthlyReports = _context.MonthlyReport.AsEnumerable().Where(rec => (rec.ReportMonth.ToShortDateString().Split("/"))[0] == Date).ToList();
+                return new ViewAsPdf("View", monthlyReports);
+            }
+            return NotFound();
+        }
+
+
+        /*// GET: MonthlyReports/Details/5
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -35,7 +67,7 @@ namespace HealthcareProject.Controllers
             }
 
             var monthlyReport = await _context.MonthlyReport
-                .FirstOrDefaultAsync(m => m.ReportMonth == id);
+                .FirstOrDefaultAsync(m => m.ReportId == id);
             if (monthlyReport == null)
             {
                 return NotFound();
@@ -55,7 +87,7 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReportMonth,NoPatients,DoctorName,MonthlyIncome")] MonthlyReport monthlyReport)
+        public async Task<IActionResult> Create([Bind("ReportId,ReportMonth,NoPatients,DoctorName,MonthlyIncome")] MonthlyReport monthlyReport)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +99,7 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: MonthlyReports/Edit/5
-        public async Task<IActionResult> Edit(DateTime? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -87,9 +119,9 @@ namespace HealthcareProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, [Bind("ReportMonth,NoPatients,DoctorName,MonthlyIncome")] MonthlyReport monthlyReport)
+        public async Task<IActionResult> Edit(string id, [Bind("ReportId,ReportMonth,NoPatients,DoctorName,MonthlyIncome")] MonthlyReport monthlyReport)
         {
-            if (id != monthlyReport.ReportMonth)
+            if (id != monthlyReport.ReportId)
             {
                 return NotFound();
             }
@@ -103,7 +135,7 @@ namespace HealthcareProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MonthlyReportExists(monthlyReport.ReportMonth))
+                    if (!MonthlyReportExists(monthlyReport.ReportId))
                     {
                         return NotFound();
                     }
@@ -118,7 +150,7 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: MonthlyReports/Delete/5
-        public async Task<IActionResult> Delete(DateTime? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -126,7 +158,7 @@ namespace HealthcareProject.Controllers
             }
 
             var monthlyReport = await _context.MonthlyReport
-                .FirstOrDefaultAsync(m => m.ReportMonth == id);
+                .FirstOrDefaultAsync(m => m.ReportId == id);
             if (monthlyReport == null)
             {
                 return NotFound();
@@ -138,7 +170,7 @@ namespace HealthcareProject.Controllers
         // POST: MonthlyReports/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(DateTime id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var monthlyReport = await _context.MonthlyReport.FindAsync(id);
             _context.MonthlyReport.Remove(monthlyReport);
@@ -146,9 +178,9 @@ namespace HealthcareProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MonthlyReportExists(DateTime id)
+        private bool MonthlyReportExists(string id)
         {
-            return _context.MonthlyReport.Any(e => e.ReportMonth == id);
-        }
+            return _context.MonthlyReport.Any(e => e.ReportId == id);
+        }*/
     }
 }

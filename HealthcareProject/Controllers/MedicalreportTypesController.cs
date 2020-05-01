@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Staff")]
     public class MedicalreportTypesController : Controller
     {
         private readonly healthcarev1Context _context;

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
+   
     public class CashPaymentsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -18,7 +20,7 @@ namespace HealthcareProject.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Staff, CEO")]
         // GET: CashPayments
         public async Task<IActionResult> Index()
         {
@@ -26,7 +28,7 @@ namespace HealthcareProject.Controllers
             return View(await healthcarev1Context.ToListAsync());
         }
 
-        // GET: CashPayments/Details/5
+     /*  //GET: CashPayments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,13 +45,14 @@ namespace HealthcareProject.Controllers
             }
 
             return View(cashPayment);
-        }
+        }*/
+        [Authorize(Roles = "Staff")]
 
         // GET: CashPayments/Create
-        public IActionResult Create(int id)
+        public IActionResult Create(int billing_id)
         {
-            ViewData["PaymentAmount"] = new SelectList(_context.Billing.Where(c => c.BillingId == id), "BillingId", "BillingAmount");
-            ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", id);
+            ViewData["PaymentAmount"] = new SelectList(_context.Billing.Where(c => c.BillingId == billing_id), "BillingId", "BillingAmount");
+            ViewData["BillingId"] = new SelectList(_context.Billing.Where(c => c.BillingId == billing_id), "BillingId", "BillingId");
 
             return View();
         }
@@ -58,6 +61,7 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Staff")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PaymentDate,PaymentId,PaymentAmount,BillingId,ReceiveReceipt")] CashPayment cashPayment)
         {
@@ -81,8 +85,8 @@ namespace HealthcareProject.Controllers
 
 
 
-                    /* SendReceipt receipt = new SendReceipt();
-                         receipt.Sendemail(get_patient_email, checkPayment.PaymentAmount, checkPayment.BillingId);*/
+                    /**//* SendReceipt receipt = new SendReceipt();
+                         receipt.Sendemail(get_patient_email, checkPayment.PaymentAmount, checkPayment.BillingId);*//**/
 
 
                     //Send an email
@@ -114,9 +118,9 @@ namespace HealthcareProject.Controllers
                 return View("CashPaymentSuccessful");
             }
             ViewData["BillingId"] = new SelectList(_context.Billing, "BillingId", "BillingId", cashPayment.BillingId);
-            return View("CashPaymentSuccessful");
+            return View("CashPaymentUnSuccessful");
         }
-
+/*
         // GET: CashPayments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -203,6 +207,6 @@ namespace HealthcareProject.Controllers
         private bool CashPaymentExists(int id)
         {
             return _context.CashPayment.Any(e => e.PaymentId == id);
-        }
+        }*/
     }
 }

@@ -6,16 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize(Roles ="CEO")]
     public class DoctorsController : Controller
     {
         private readonly healthcarev1Context _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signManager;
 
-        public DoctorsController(healthcarev1Context context)
+        public DoctorsController(healthcarev1Context context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signManager = signManager;
         }
 
         // GET: Doctors
@@ -59,6 +66,27 @@ namespace HealthcareProject.Controllers
             {
                 _context.Add(doctor);
                 await _context.SaveChangesAsync();
+
+                //Create account with role as doctor
+                var doctoraccount = new IdentityUser
+                {
+                    UserName = doctor.DoctorEmail,
+                    Email = doctor.DoctorEmail,
+                    EmailConfirmed = true,
+
+
+                };
+
+                var user = await _userManager.FindByEmailAsync(doctor.DoctorEmail);
+                if (user == null)
+                {
+                    var createpoweruser = await _userManager.CreateAsync(doctoraccount, "Superuser1!");
+                    if (createpoweruser.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(doctoraccount, "Doctor");
+                    }
+
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(doctor);

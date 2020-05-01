@@ -40,32 +40,68 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApptDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentReason)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VisitRecord)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.PatientEmail)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ApptId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+
+            @if (User.IsInRole("Patient"))
+            {
+                @if (item.PatientEmail == User.Identity.Name)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApptDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AppointmentReason)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PatientEmail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VisitRecord)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Patient.PatientName)
+                        </td>
+                        <td>
+
+                            <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+
+            @if (User.IsInRole("Staff"))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApptDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentReason)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientEmail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VisitRecord)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Doctor.DoctorEmail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Patient.PatientName)
+                    </td>
+                    <td>
+
+                        <a asp-action="Details" asp-route-id="@item.ApptId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ApptId">Delete</a>
+                    </td>
+                </tr>
+            }   }
     </tbody>
 </table>

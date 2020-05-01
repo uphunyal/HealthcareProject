@@ -1,101 +1,164 @@
 ﻿@model IEnumerable<HealthcareProject.Models.Patient>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Patient";
 }
 
-<h1>Index</h1>
+<h1>Patient</h1>
 
+@if (User.IsInRole("Staff")) { 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+}
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ssn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Weight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Height)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Insurance)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bloodpressure)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pulse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentMisused)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Allergy)
-            </th>
-            <th></th>
-        </tr>
+        @if (User.IsInRole("Patient") )
+        {
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientEmail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PatientAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ssn)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Weight)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Height)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Insurance)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bloodpressure)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pulse)
+                </th>
+               
+                <th>
+                    @Html.DisplayNameFor(model => model.Allergy)
+                </th>
+
+                <th></th>
+            </tr>
+}
+        @if (User.IsInRole("Staff")||User.IsInRole("CEO"))
+        {
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PatientName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PatientEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PatientAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ssn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Insurance)
+        </th>
+
+    </tr>
+}
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ssn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Height)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Insurance)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bloodpressure)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pulse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentMisused)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Allergy)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PatientId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PatientId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PatientId">Delete</a>
-            </td>
-        </tr>
+        @foreach (var item in Model)
+        {
+            @if (User.IsInRole("Patient") && User.Identity.Name == item.PatientEmail)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientEmail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PatientAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ssn)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Insurance)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Weight)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Height)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bloodpressure)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pulse)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentMisused)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Allergy)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.PatientId">Edit Info</a> |
+                        <a asp-action="Details" asp-route-id="@item.PatientId">Details</a> |
+
+                    </td>
+                </tr>
+            }
+            @if (User.IsInRole("Staff")||User.IsInRole("CEO"))
+        {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PatientName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PatientEmail)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PatientAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Phone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ssn)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Insurance)
+        </td>
+        @if (User.IsInRole("Staff")) { 
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.PatientId">Edit</a> |
+           
+
+        </td>
+        }
+    </tr>
+    }
 }
     </tbody>
 </table>

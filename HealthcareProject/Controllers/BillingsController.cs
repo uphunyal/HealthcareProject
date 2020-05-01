@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using HealthcareProject.Models;
 using Stripe;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Authorization;
+using Rotativa.AspNetCore;
 
 namespace HealthcareProject.Controllers
 {
+    [Authorize(Roles = "Staff")]
     public class BillingsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -20,6 +23,7 @@ namespace HealthcareProject.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Billings
         public async Task<IActionResult> Index(string searchstring)
         {
@@ -28,10 +32,25 @@ namespace HealthcareProject.Controllers
                 var searchContext = _context.Billing.Include(b => b.Patient).Where(c=>c.BillingId==Int32.Parse(searchstring));
                 return View(await searchContext.ToListAsync());
             }
+            if(User.Identity.IsAuthenticated && User.IsInRole("Staff")) { 
             var healthcarev1Context = _context.Billing.Include(b => b.Patient);
             return View(await healthcarev1Context.ToListAsync());
+            }
+            if (User.Identity.IsAuthenticated && User.IsInRole("CEO"))
+            {
+                var healthcarev1Context = _context.Billing.Include(b => b.Patient);
+                return View(await healthcarev1Context.ToListAsync());
+            }
+            if (User.Identity.IsAuthenticated && User.IsInRole("Patient"))
+            {
+                var healthcarev1Context = _context.Billing.Include(b => b.Patient).Where(p=>p.Patient.PatientEmail==User.Identity.Name);
+                return View(await healthcarev1Context.ToListAsync());
+            }
+            return View("SearchInvoice");
         }
-      
+
+        [AllowAnonymous]
+
         // GET: Billings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -48,9 +67,10 @@ namespace HealthcareProject.Controllers
                 return NotFound();
             }
 
-            return View(billing);
+            return new  ViewAsPdf(billing);
         }
 
+        [AllowAnonymous]
         //Card payment using stripe
         public async Task<IActionResult> Charge(int? id, string stripeEmail, string stripeToken)
         {
@@ -168,7 +188,7 @@ namespace HealthcareProject.Controllers
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail", billing.PatientId);
             return View(billing);
         }
-
+/*
         // GET: Billings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -255,6 +275,6 @@ namespace HealthcareProject.Controllers
         private bool BillingExists(int id)
         {
             return _context.Billing.Any(e => e.BillingId == id);
-        }
+        }*/
     }
 }

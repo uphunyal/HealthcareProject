@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HealthcareProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Staff, Patient")]
     public class MedicalReportsController : Controller
     {
         private readonly healthcarev1Context _context;
@@ -23,8 +23,15 @@ namespace HealthcareProject.Controllers
         // GET: MedicalReports
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole("Staff")) { 
             var healthcarev1Context = _context.MedicalReport.Include(m => m.Medicalreport).Include(m => m.Patient);
             return View(await healthcarev1Context.ToListAsync());
+            }
+            else
+            {
+                var healthcarev1Context = _context.MedicalReport.Include(m => m.Medicalreport).Include(m => m.Patient).Where(c=>c.Patient.PatientEmail==User.Identity.Name);
+                return View(await healthcarev1Context.ToListAsync());
+            }
         }
 
         // GET: MedicalReports/Details/5
@@ -48,10 +55,12 @@ namespace HealthcareProject.Controllers
         }
 
         // GET: MedicalReports/Create
-        public IActionResult Create()
+
+        [Authorize(Roles = "Staff")]
+            public IActionResult Create()
         {
             ViewData["MedicalreportId"] = new SelectList(_context.MedicalreportType, "MedicalreportId", "ReportType");
-            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy");
+            ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "PatientEmail");
             return View();
         }
 
@@ -59,6 +68,7 @@ namespace HealthcareProject.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Staff")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MedicalreportName,ReportFile,MedicalreportId,PatientId")] MedicalReport medicalReports)
         {
@@ -72,7 +82,7 @@ namespace HealthcareProject.Controllers
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", medicalReports.PatientId);
             return View(medicalReports);
         }
-
+/*
         // GET: MedicalReports/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -127,8 +137,8 @@ namespace HealthcareProject.Controllers
             ViewData["PatientId"] = new SelectList(_context.Patient, "PatientId", "Allergy", medicalReports.PatientId);
             return View(medicalReports);
         }
-
-        // GET: MedicalReports/Delete/5
+*/
+      /*  // GET: MedicalReports/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -157,7 +167,7 @@ namespace HealthcareProject.Controllers
             _context.MedicalReport.Remove(medicalReport);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool MedicalReportExists(string id)
         {
